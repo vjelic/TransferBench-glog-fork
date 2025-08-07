@@ -12,31 +12,7 @@
           "informationUri": "https://www.glog.ai",
           "rules": [
             {
-              "id": "glog-dbb0bdec-695e-4537-bd73-d038dc109b5f",
-              "help": {
-                "text": "",
-                "markdown": "### Description\n\nIn C++ programming, using weak or non-cryptographic random number generators can lead to vulnerabilities, especially in security-sensitive applications. Functions like `rand()` from the C standard library are not suitable for cryptographic purposes because they produce predictable sequences of numbers. This predictability can be exploited by attackers to compromise the security of the application.\n\n### General Mitigation Advice\n\nTo mitigate this vulnerability, use a cryptographically secure random number generator. In C++, the `<random>` library provides better alternatives, but for cryptographic purposes, consider using libraries like OpenSSL or libsodium that offer cryptographically secure random number generation.\n\n### Source Code Fix Recommendation\n\n#### Vulnerable Code\n\n```cpp\n#include <algorithm>\n#include <vector>\n#include <cstdlib> // For rand()\n\nvoid shuffleVector(std::vector<int>& vec) {\n    std::random_shuffle(vec.begin(), vec.end());\n}\n```\n\n#### Fixed Code\n\n```cpp\n#include <algorithm>\n#include <vector>\n#include <random> // For std::random_device and std::mt19937\n\nvoid shuffleVector(std::vector<int>& vec) {\n    std::random_device rd;\n    std::mt19937 g(rd());\n    std::shuffle(vec.begin(), vec.end(), g);\n}\n```\n\n### Library Dependencies\n\n- `<algorithm>`: Required for `std::shuffle`.\n- `<vector>`: Required for using `std::vector`.\n- `<random>`: Required for `std::random_device` and `std::mt19937`.\n\n### OWASP Resources\n\n- [OWASP Cryptographic Storage Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Cryptographic_Storage_Cheat_Sheet.html)\n\n### Common Weakness Enumeration (CWE)\n\n- [CWE-338: Use of Cryptographically Weak Pseudo-Random Number Generator (PRNG)](https://cwe.mitre.org/data/definitions/338.html)"
-              },
-              "properties": {
-                "tags": [
-                  "DS148264"
-                ]
-              }
-            },
-            {
-              "id": "glog-91b4f1d3-8cb2-4254-bbda-afc6d4a3ecc6",
-              "help": {
-                "text": "",
-                "markdown": "## Description\n\nThe `memcpy` function in C++ is used to copy a block of memory from one location to another. This function does not check for the size of the destination buffer, which can lead to buffer overflow if the source is larger than the destination. This is a common vulnerability in C++ programming, often exploited to execute arbitrary code, alter the intended program flow, or cause a program crash.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, it is recommended to always ensure that the destination buffer is large enough to hold the data being copied. This can be done by checking the size of the source and destination before calling `memcpy`. Alternatively, consider using safer functions that include buffer size checks, such as `strncpy` or `memcpy_s` (in C11).\n\n## Source Code Fix Recommendation\n\nReplace the `memcpy` function with a safer alternative that includes buffer size checks. For example, you can use `std::copy` from the `<algorithm>` library in C++:\n\n```cpp\n#include <algorithm>\n\nstd::copy(cfg.data.fillPattern.data(), cfg.data.fillPattern.data() + leftOver, cpuBufferPtr);\n```\n\n## Library Dependencies\n\nThe code example requires the following library dependencies:\n\n- `<cstring>` for `memcpy`\n- `<algorithm>` for `std::copy`\n\n## OWASP and CWE Links\n\n- [OWASP C++](https://owasp.org/www-pdf-archive/OWASP_SCP_Quick_Reference_Guide_v2.pdf)\n- [CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow')](https://cwe.mitre.org/data/definitions/120.html)\n\nPlease note that these links are subject to change and may not always be accessible. Always check the validity of the links before using them."
-              },
-              "properties": {
-                "tags": [
-                  "DS121708"
-                ]
-              }
-            },
-            {
-              "id": "glog-beab4bcc-df72-4a75-a749-2e5f06a6ef18",
+              "id": "glog-102749f2-6bc9-465c-9839-50965d4a7767",
               "help": {
                 "text": "",
                 "markdown": "## Description\n\nThe `memcpy` function in C++ is used to copy a block of memory from one location to another. This function is vulnerable to buffer overflow attacks if the size of the data being copied is larger than the size of the destination buffer. In the provided code snippet, `memcpy(p.dst[i], src, p.N * sizeof(float))`, if `p.N * sizeof(float)` is larger than the size of `p.dst[i]`, it can lead to a buffer overflow.\n\nBuffer overflow vulnerabilities can lead to various security issues such as data corruption, crashes, and code execution. An attacker can exploit this vulnerability to execute arbitrary code or cause a denial of service.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, you should always ensure that the destination buffer is large enough to hold the data being copied. This can be done by checking the size of the destination buffer before calling `memcpy`.\n\n## Source Code Fix Recommendation\n\nHere is a recommended fix for the provided code snippet:\n\n```cpp\nif (p.N * sizeof(float) <= sizeof(p.dst[i])) {\n    memcpy(p.dst[i], src, p.N * sizeof(float));\n} else {\n    // Handle error\n}\n```\n\nIn this fix, we check if the size of the data being copied is less than or equal to the size of the destination buffer before calling `memcpy`. If the data is too large, we handle the error appropriately.\n\n## Library Dependencies\n\nThe `memcpy` function is part of the C Standard Library, so you need to include the `cstring` header file to use it:\n\n```cpp\n#include <cstring>\n```\n\n## OWASP Resources\n\n- [Buffer Overflow](https://owasp.org/www-community/vulnerabilities/Buffer_Overflow)\n- [CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow')](https://cwe.mitre.org/data/definitions/120.html)\n\nPlease note that the links provided are valid and active at the time of writing this report."
@@ -48,19 +24,7 @@
               }
             },
             {
-              "id": "glog-44cf9796-4aed-4744-93d6-5837e357d76e",
-              "help": {
-                "text": "",
-                "markdown": "## Description\n\nThe `memcpy` function in C++ is used to copy a block of memory from one location to another. This function does not check for the size of the destination buffer, which can lead to buffer overflow if the source data is larger than the destination buffer. This is a common vulnerability in C++ programming that can lead to serious security issues such as data corruption, system crash, or even arbitrary code execution.\n\nIn the provided code snippet, the vulnerability lies in the fact that the size of the data being copied (`patternLen * sizeof(float)`) might exceed the size of the destination buffer (`cpuBufferPtr`).\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, you should always ensure that the destination buffer is large enough to hold the data being copied. This can be done by checking the size of the destination buffer before calling `memcpy`.\n\nAdditionally, consider using safer alternatives to `memcpy` such as `strncpy` or `memcpy_s` (in C11), which take the size of the destination buffer as an argument and ensure that no buffer overflow occurs.\n\n## Source Code Fix Recommendation\n\nHere is a recommended fix for the provided code snippet:\n\n```cpp\nsize_t bufferSize = /* size of cpuBufferPtr buffer */;\nsize_t dataSize = patternLen * sizeof(float);\n\nif (dataSize <= bufferSize) {\n    memcpy(cpuBufferPtr, cfg.data.fillPattern.data(), dataSize);\n} else {\n    // Handle error: source data is too large for the destination buffer\n}\n```\n\n## Library Dependencies\n\nThe provided code snippet requires the following library dependencies:\n\n- `<cstring>`: for the `memcpy` function\n- `<cstddef>`: for the `size_t` type\n\n## OWASP Resources\n\n- [Buffer Overflow](https://owasp.org/www-community/vulnerabilities/Buffer_Overflow)\n\n## Common Weakness Enumeration (CWE)\n\n- [CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow')](https://cwe.mitre.org/data/definitions/120.html)\n- [CWE-119: Improper Restriction of Operations within the Bounds of a Memory Buffer](https://cwe.mitre.org/data/definitions/119.html)"
-              },
-              "properties": {
-                "tags": [
-                  "DS121708"
-                ]
-              }
-            },
-            {
-              "id": "glog-c732c473-3070-4b55-a5a9-d22800ef8524",
+              "id": "glog-25d85a9a-742a-41ac-918c-d1757755cfba",
               "help": {
                 "text": "",
                 "markdown": "### Description\n\nIn C++ programming, using weak or non-cryptographic random number generators can lead to vulnerabilities, especially in security-sensitive applications. Functions like `rand()` from the C standard library are not suitable for cryptographic purposes because they produce predictable sequences of numbers. This predictability can be exploited by attackers to compromise the security of the application.\n\n### General Mitigation Advice\n\nTo mitigate this vulnerability, use a cryptographically secure random number generator. In C++, the `<random>` library provides better alternatives, but for cryptographic purposes, consider using libraries like OpenSSL or libsodium that offer cryptographically secure random number generation.\n\n### Source Code Fix Recommendation\n\n#### Vulnerable Code\n\n```cpp\n#include <algorithm>\n#include <vector>\n#include <cstdlib> // For rand()\n\nvoid shuffleVector(std::vector<int>& vec) {\n    std::random_shuffle(vec.begin(), vec.end());\n}\n```\n\n#### Fixed Code\n\n```cpp\n#include <algorithm>\n#include <vector>\n#include <random> // For std::random_device and std::mt19937\n\nvoid shuffleVector(std::vector<int>& vec) {\n    std::random_device rd;\n    std::mt19937 g(rd());\n    std::shuffle(vec.begin(), vec.end(), g);\n}\n```\n\n### Library Dependencies\n\n- `<algorithm>`: Required for `std::shuffle`.\n- `<vector>`: Required for using `std::vector`.\n- `<random>`: Required for `std::random_device` and `std::mt19937`.\n\n### OWASP Resources\n\n- [OWASP Cryptographic Storage Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Cryptographic_Storage_Cheat_Sheet.html)\n\n### Common Weakness Enumeration (CWE)\n\n- [CWE-338: Use of Cryptographically Weak Pseudo-Random Number Generator (PRNG)](https://cwe.mitre.org/data/definitions/338.html)"
@@ -72,7 +36,31 @@
               }
             },
             {
-              "id": "glog-bec09474-31ca-47a9-b52f-98c7f7c7aa31",
+              "id": "glog-d07df416-c119-4ffe-923c-bb91125df9fe",
+              "help": {
+                "text": "",
+                "markdown": "## Description\n\nThe `memcpy` function in C++ is used to copy a block of memory from one location to another. This function does not check for the size of the destination buffer, which can lead to buffer overflow if the source data is larger than the destination buffer. This is a common vulnerability in C++ programming that can lead to serious security issues such as data corruption, system crash, or even arbitrary code execution.\n\nIn the provided code snippet, the vulnerability lies in the fact that the size of the data being copied (`patternLen * sizeof(float)`) might exceed the size of the destination buffer (`cpuBufferPtr`).\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, you should always ensure that the destination buffer is large enough to hold the data being copied. This can be done by checking the size of the destination buffer before calling `memcpy`.\n\nAdditionally, consider using safer alternatives to `memcpy` such as `strncpy` or `memcpy_s` (in C11), which take the size of the destination buffer as an argument and ensure that no buffer overflow occurs.\n\n## Source Code Fix Recommendation\n\nHere is a recommended fix for the provided code snippet:\n\n```cpp\nsize_t bufferSize = /* size of cpuBufferPtr buffer */;\nsize_t dataSize = patternLen * sizeof(float);\n\nif (dataSize <= bufferSize) {\n    memcpy(cpuBufferPtr, cfg.data.fillPattern.data(), dataSize);\n} else {\n    // Handle error: source data is too large for the destination buffer\n}\n```\n\n## Library Dependencies\n\nThe provided code snippet requires the following library dependencies:\n\n- `<cstring>`: for the `memcpy` function\n- `<cstddef>`: for the `size_t` type\n\n## OWASP Resources\n\n- [Buffer Overflow](https://owasp.org/www-community/vulnerabilities/Buffer_Overflow)\n\n## Common Weakness Enumeration (CWE)\n\n- [CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow')](https://cwe.mitre.org/data/definitions/120.html)\n- [CWE-119: Improper Restriction of Operations within the Bounds of a Memory Buffer](https://cwe.mitre.org/data/definitions/119.html)"
+              },
+              "properties": {
+                "tags": [
+                  "DS121708"
+                ]
+              }
+            },
+            {
+              "id": "glog-eef758ac-21c6-4c2c-907f-18b966505c5c",
+              "help": {
+                "text": "",
+                "markdown": "## Description\n\nThe `memcpy` function in C++ is used to copy a block of memory from one location to another. This function does not check for the size of the destination buffer, which can lead to buffer overflow if the source is larger than the destination. This is a common vulnerability in C++ programming, often exploited to execute arbitrary code, alter the intended program flow, or cause a program crash.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, it is recommended to always ensure that the destination buffer is large enough to hold the data being copied. This can be done by checking the size of the source and destination before calling `memcpy`. Alternatively, consider using safer functions that include buffer size checks, such as `strncpy` or `memcpy_s` (in C11).\n\n## Source Code Fix Recommendation\n\nReplace the `memcpy` function with a safer alternative that includes buffer size checks. For example, you can use `std::copy` from the `<algorithm>` library in C++:\n\n```cpp\n#include <algorithm>\n\nstd::copy(cfg.data.fillPattern.data(), cfg.data.fillPattern.data() + leftOver, cpuBufferPtr);\n```\n\n## Library Dependencies\n\nThe code example requires the following library dependencies:\n\n- `<cstring>` for `memcpy`\n- `<algorithm>` for `std::copy`\n\n## OWASP and CWE Links\n\n- [OWASP C++](https://owasp.org/www-pdf-archive/OWASP_SCP_Quick_Reference_Guide_v2.pdf)\n- [CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow')](https://cwe.mitre.org/data/definitions/120.html)\n\nPlease note that these links are subject to change and may not always be accessible. Always check the validity of the links before using them."
+              },
+              "properties": {
+                "tags": [
+                  "DS121708"
+                ]
+              }
+            },
+            {
+              "id": "glog-2d789269-2775-4900-9415-977e2277e25b",
               "help": {
                 "text": "",
                 "markdown": "## Description\n\nThe `strlen` function in C++ is used to find the length of a string. However, it can lead to vulnerabilities if not used properly. The function counts the number of characters in a string until it reaches a null character (`\\0`). If the string is not properly null-terminated, `strlen` will continue reading memory until it encounters a null character, potentially leading to buffer overflows or information leaks.\n\nIn the provided code snippet, `strlen(\"RoCE v2\")`, there is no direct vulnerability as the string is a string literal which is automatically null-terminated by the compiler. However, if the string was user input or read from an untrusted source, it could potentially not be null-terminated and lead to a vulnerability.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, always ensure that strings are properly null-terminated before passing them to `strlen`. If the string is user input or from an untrusted source, consider using safer alternatives such as `strnlen`, which takes a maximum length parameter and will not read past this length, even if it does not encounter a null character.\n\n## Source Code Fix Recommendation\n\nIn the provided code snippet, no fix is necessary as the string is a string literal and automatically null-terminated. However, if the string was user input or from an untrusted source, a safer alternative such as `strnlen` could be used:\n\n```cpp\nconst char* str = /* untrusted input */;\nsize_t len = strnlen(str, MAX_LENGTH);\n```\n\n## Library Dependencies\n\nThe `strlen` function is part of the C standard library (`<cstring>` in C++), so no additional library dependencies are required.\n\n## References\n\n- [OWASP C++ Secure Coding Practices](https://cheatsheetseries.owasp.org/cheatsheets/C-Based_Toolchain_Hardening_Cheat_Sheet.html)\n- [CWE-126: Buffer Over-read](https://cwe.mitre.org/data/definitions/126.html)\n\nPlease note that the links provided are accessible to anonymous users at the time of writing this report."
@@ -84,7 +72,7 @@
               }
             },
             {
-              "id": "glog-1bbe99df-2127-494d-855a-4aff37bd1bc1",
+              "id": "glog-5b80e359-a67c-41a3-b8d7-055cb990fdaf",
               "help": {
                 "text": "",
                 "markdown": "## Description\n\nThe `strlen` function in C++ is used to find the length of a string. However, it can lead to vulnerabilities if not used properly. The function counts the number of characters in a string until it reaches a null character (`\\0`). If the string is not properly null-terminated, `strlen` will continue reading memory until it encounters a null character, potentially leading to buffer overflows, memory corruption, and other undefined behavior.\n\nIn the provided code snippet, `strlen(\"RoCE v1\")`, there is no direct vulnerability as the string is a string literal which is automatically null-terminated by the compiler. However, if the string was user input or came from an untrusted source, it could potentially be a source of vulnerability.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, always ensure that strings are properly null-terminated before passing them to `strlen`. Avoid using `strlen` on strings from untrusted sources. If you must use `strlen` on such strings, ensure that they are properly sanitized and null-terminated.\n\n## Source Code Fix Recommendation\n\nIn the provided code snippet, there is no direct vulnerability. However, if the string was user input or came from an untrusted source, it could be fixed as follows:\n\n```cpp\n#include <cstring>\n\nchar user_input[100];\n// ... (code to get user input)\nuser_input[sizeof(user_input) - 1] = '\\0';\nsize_t length = strlen(user_input);\n```\n\nIn this code, we ensure that the string is null-terminated before passing it to `strlen`.\n\n## Library Dependencies\n\nThe `strlen` function is part of the C standard library, so the only library dependency required by the code example is:\n\n```cpp\n#include <cstring>\n```\n\n## References\n\n- [OWASP C++ Secure Coding Practices](https://cheatsheetseries.owasp.org/cheatsheets/C-Based_Toolchain_Hardening_Cheat_Sheet.html)\n- [CWE-126: Buffer Over-read](https://cwe.mitre.org/data/definitions/126.html)\n\nPlease note that the links provided are accessible to anonymous users at the time of writing this report."
@@ -96,7 +84,7 @@
               }
             },
             {
-              "id": "glog-d0ae4582-d5a6-4ce5-bdc5-ba6b4a8f00fa",
+              "id": "glog-05cdbd82-0479-4e32-866f-bf3645f37866",
               "help": {
                 "text": "",
                 "markdown": "## Description\n\nThe `strlen` function in C and C++ is used to find the length of a string. However, it can lead to vulnerabilities if not used properly. The function counts the number of characters in a string until it reaches a null character (`\\0`). If the string is not properly null-terminated, `strlen` will continue reading memory beyond the intended boundary, leading to a buffer overflow vulnerability. This can lead to crashes, incorrect behavior, or even code execution if an attacker can control the overflow.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, always ensure that your strings are properly null-terminated. Avoid using `strlen` on strings that may not be null-terminated. If you are dealing with strings that may not be null-terminated, consider using functions that take a length parameter, such as `strnlen`, which will not read beyond a specified length.\n\n## Source Code Fix Recommendation\n\nIn the specific case of `strlen(\"IB/RoCE v1\")`, the string is a string literal and is automatically null-terminated, so there is no vulnerability. However, if the string were not a literal and its null-termination were not guaranteed, you could use `strnlen` instead:\n\n```cpp\nconst char* str = /* some string that may not be null-terminated */;\nsize_t len = strnlen(str, MAX_LENGTH);\n```\n\nHere, `MAX_LENGTH` is the maximum length you expect `str` to be. `strnlen` will not read beyond this length, preventing a buffer overflow.\n\n## Library Dependencies\n\nThe `strlen` function is part of the C standard library, so no additional library dependencies are required.\n\n## References\n\n- [OWASP Buffer Overflow](https://owasp.org/www-community/vulnerabilities/Buffer_Overflow)\n- [CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow')](https://cwe.mitre.org/data/definitions/120.html)"
@@ -108,7 +96,7 @@
               }
             },
             {
-              "id": "glog-b43dcfc3-fd68-44b6-becb-081993f63caa",
+              "id": "glog-a1afe8da-beb6-4c49-a009-e6c6c8fa6a9a",
               "help": {
                 "text": "",
                 "markdown": "## Description\n\nThe `strlen()` function in C and C++ is used to find the length of a string. However, it can lead to vulnerabilities if not used properly. The function counts the number of characters in a string until it reaches a null character (`'\\0'`). If the string is not null-terminated, `strlen()` will continue reading memory until it encounters a null character, which can lead to buffer overflows, memory corruption, and other undefined behavior.\n\nIn the provided code snippet, `strlen(gidRoceVerStr)`, there is a potential vulnerability if `gidRoceVerStr` is not a null-terminated string.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, always ensure that strings are null-terminated before passing them to `strlen()`. Additionally, consider using safer alternatives to `strlen()`, such as `strnlen()`, which takes a maximum length parameter and will not read past this length, even if it does not encounter a null character.\n\n## Source Code Fix Recommendation\n\nIf `gidRoceVerStr` is a character array, ensure it is null-terminated:\n\n```cpp\nchar gidRoceVerStr[MAX_LENGTH] = {0}; // initialize all elements to '\\0'\n// populate gidRoceVerStr\nsize_t length = strlen(gidRoceVerStr);\n```\n\nIf `gidRoceVerStr` is a pointer, consider using `strnlen()`:\n\n```cpp\nchar* gidRoceVerStr;\n// allocate and populate gidRoceVerStr\nsize_t length = strnlen(gidRoceVerStr, MAX_LENGTH);\n```\n\nIn both cases, replace `MAX_LENGTH` with the maximum expected length of `gidRoceVerStr`.\n\n## Library Dependencies\n\nThe `strlen()` function is part of the C standard library, so the code requires the `<cstring>` (or `<string.h>` in C) header file.\n\n## References\n\n- [OWASP C/C++ Vulnerabilities](https://owasp.org/www-pdf-archive/OWASP_SCP_Quick_Reference_Guide_v2.pdf)\n- [CWE-126: Buffer Over-read](https://cwe.mitre.org/data/definitions/126.html)"
@@ -120,7 +108,7 @@
               }
             },
             {
-              "id": "glog-38233220-c23a-4586-b374-2b9d6cf33458",
+              "id": "glog-42a26b4a-7818-4388-a172-bea2cbf909f9",
               "help": {
                 "text": "",
                 "markdown": "## Description\n\nThe `strlen(argv[2])` function in C++ is used to calculate the length of a string. The vulnerability arises when the function is used on a string that is not null-terminated. This can lead to buffer overflows, memory corruption, and other unexpected behavior, as the function will continue reading memory until it encounters a null character.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, always ensure that the string passed to `strlen()` is null-terminated. This can be done by initializing your strings with a null character at the end, or by manually adding a null character at the end of the string before passing it to `strlen()`.\n\n## Source Code Fix Recommendation\n\nInstead of using `strlen(argv[2])`, consider using `strnlen(argv[2], MAX_LEN)`, where `MAX_LEN` is the maximum expected length of the string. This function will stop reading memory after `MAX_LEN` characters, preventing potential buffer overflows and memory corruption.\n\n```cpp\n#include <string.h>\n\n#define MAX_LEN 100\n\nint main(int argc, char *argv[]) {\n    size_t len = strnlen(argv[2], MAX_LEN);\n    // ...\n}\n```\n\n## Library Dependencies\n\nThe `strlen()` and `strnlen()` functions are part of the `<string.h>` library in C++. No additional libraries are needed for these functions.\n\n## References\n\n- [OWASP C++ Secure Coding Practices](https://cheatsheetseries.owasp.org/cheatsheets/C-Based_Toolchain_Hardening_Cheat_Sheet.html)\n- [CWE-126: Buffer Over-read](https://cwe.mitre.org/data/definitions/126.html)"
@@ -128,6 +116,30 @@
               "properties": {
                 "tags": [
                   "DS140021"
+                ]
+              }
+            },
+            {
+              "id": "glog-03d57739-e18d-4a44-b4f0-fa17e258ae49",
+              "help": {
+                "text": "",
+                "markdown": "## Description\n\nThe `strlen()` function in C++ is used to find the length of a string. However, it can lead to vulnerabilities if not used properly. The function counts the number of characters in a string up to, but not including, the terminating null character. If the string does not have a null character, `strlen()` will continue reading memory until it encounters one, which can lead to buffer overflows, memory corruption, and other unexpected behavior.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, always ensure that your strings are null-terminated. This can be done by initializing your strings with a null character or by manually adding one at the end of your string. Additionally, consider using safer alternatives to `strlen()`, such as `strnlen()`, which takes an additional parameter specifying the maximum length of the string.\n\n## Source Code Fix Recommendation\n\nInstead of:\n\n```cpp\n#include <cstring>\n\nchar pattern[] = \"example\";\nint length = strlen(pattern);\n```\n\nUse:\n\n```cpp\n#include <cstring>\n\nchar pattern[] = \"example\";\nint length = strnlen(pattern, sizeof(pattern));\n```\n\nIn the fixed code, `strnlen()` is used instead of `strlen()`. The second parameter to `strnlen()` is the maximum number of characters to read. If `pattern` is not null-terminated, `strnlen()` will stop reading after `sizeof(pattern)` characters, preventing a buffer overflow.\n\n## Library Dependencies\n\nThe code example requires the `<cstring>` library.\n\n## References\n\n- [OWASP C++ Secure Coding Practices](https://cheatsheetseries.owasp.org/cheatsheets/C-Based_Toolchain_Hardening_Cheat_Sheet.html)\n- [Common Weakness Enumeration (CWE-126)](https://cwe.mitre.org/data/definitions/126.html)"
+              },
+              "properties": {
+                "tags": [
+                  "DS140021"
+                ]
+              }
+            },
+            {
+              "id": "glog-9f642a9d-bf00-4304-b96b-780f656fd116",
+              "help": {
+                "text": "",
+                "markdown": "### Description\n\nIn C++ programming, using weak or non-cryptographic random number generators can lead to vulnerabilities, especially in security-sensitive applications. Functions like `rand()` from the C standard library are not suitable for cryptographic purposes because they produce predictable sequences of numbers. This predictability can be exploited by attackers to compromise the security of the application.\n\n### General Mitigation Advice\n\nTo mitigate this vulnerability, use a cryptographically secure random number generator. In C++, the `<random>` library provides better alternatives, but for cryptographic purposes, consider using libraries like OpenSSL or libsodium that offer cryptographically secure random number generation.\n\n### Source Code Fix Recommendation\n\n#### Vulnerable Code\n\n```cpp\n#include <algorithm>\n#include <vector>\n#include <cstdlib> // For rand()\n\nvoid shuffleVector(std::vector<int>& vec) {\n    std::random_shuffle(vec.begin(), vec.end());\n}\n```\n\n#### Fixed Code\n\n```cpp\n#include <algorithm>\n#include <vector>\n#include <random> // For std::random_device and std::mt19937\n\nvoid shuffleVector(std::vector<int>& vec) {\n    std::random_device rd;\n    std::mt19937 g(rd());\n    std::shuffle(vec.begin(), vec.end(), g);\n}\n```\n\n### Library Dependencies\n\n- `<algorithm>`: Required for `std::shuffle`.\n- `<vector>`: Required for using `std::vector`.\n- `<random>`: Required for `std::random_device` and `std::mt19937`.\n\n### OWASP Resources\n\n- [OWASP Cryptographic Storage Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Cryptographic_Storage_Cheat_Sheet.html)\n\n### Common Weakness Enumeration (CWE)\n\n- [CWE-338: Use of Cryptographically Weak Pseudo-Random Number Generator (PRNG)](https://cwe.mitre.org/data/definitions/338.html)"
+              },
+              "properties": {
+                "tags": [
+                  "DS148264"
                 ]
               }
             }
@@ -143,112 +155,7 @@
       "language": "en-US",
       "results": [
         {
-          "ruleId": "glog-dbb0bdec-695e-4537-bd73-d038dc109b5f",
-          "kind": "fail",
-          "level": "error",
-          "message": {
-            "text": "Avoid Using Weak or Non-Cryptographic Random Number Generators"
-          },
-          "locations": [
-            {
-              "physicalLocation": {
-                "artifactLocation": {
-                  "uri": "src/header/TransferBench.hpp"
-                },
-                "region": {
-                  "startLine": 2471,
-                  "startColumn": 13,
-                  "endLine": 2471,
-                  "endColumn": 21,
-                  "charOffset": 102335,
-                  "charLength": 8,
-                  "snippet": {
-                    "text": "shuffle(",
-                    "rendered": {
-                      "text": "shuffle(",
-                      "markdown": "`shuffle(`"
-                    }
-                  },
-                  "sourceLanguage": "cpp"
-                }
-              }
-            }
-          ],
-          "properties": {
-            "DevSkimSeverity": "Important",
-            "DevSkimConfidence": "High",
-            "tags": [
-              "Cryptography.PRNG.Weak"
-            ]
-          }
-        },
-        {
-          "ruleId": "glog-91b4f1d3-8cb2-4254-bbda-afc6d4a3ecc6",
-          "kind": "fail",
-          "level": "note",
-          "message": {
-            "text": "Detected Vulnerability in C Function (memcpy)"
-          },
-          "locations": [
-            {
-              "physicalLocation": {
-                "artifactLocation": {
-                  "uri": "src/header/TransferBench.hpp"
-                },
-                "region": {
-                  "startLine": 2173,
-                  "startColumn": 10,
-                  "endLine": 2173,
-                  "endColumn": 84,
-                  "charOffset": 89286,
-                  "charLength": 74,
-                  "snippet": {
-                    "text": "memcpy(cpuBufferPtr, cfg.data.fillPattern.data(), leftOver * sizeof(float)",
-                    "rendered": {
-                      "text": "memcpy(cpuBufferPtr, cfg.data.fillPattern.data(), leftOver * sizeof(float)",
-                      "markdown": "`memcpy(cpuBufferPtr, cfg.data.fillPattern.data(), leftOver * sizeof(float)`"
-                    }
-                  },
-                  "sourceLanguage": "cpp"
-                }
-              }
-            }
-          ],
-          "fixes": [
-            {
-              "description": {
-                "text": "There are a number of conditions in which memcpy can introduce a vulnerability (mismatched buffer sizes, null pointers, etc.). More secure alternitives perform additional validation of the source and destination buffer"
-              },
-              "artifactChanges": [
-                {
-                  "artifactLocation": {
-                    "uri": "src/header/TransferBench.hpp"
-                  },
-                  "replacements": [
-                    {
-                      "deletedRegion": {
-                        "charOffset": 89286,
-                        "charLength": 74
-                      },
-                      "insertedContent": {
-                        "text": "memcpy_s(cpuBufferPtr, <size of cpuBufferPtr>,  cfg.data.fillPattern.data(),  leftOver * sizeof(float)"
-                      }
-                    }
-                  ]
-                }
-              ]
-            }
-          ],
-          "properties": {
-            "DevSkimSeverity": "BestPractice",
-            "DevSkimConfidence": "High",
-            "tags": [
-              "API.DangerousAPI.ProblematicFunction"
-            ]
-          }
-        },
-        {
-          "ruleId": "glog-beab4bcc-df72-4a75-a749-2e5f06a6ef18",
+          "ruleId": "glog-102749f2-6bc9-465c-9839-50965d4a7767",
           "kind": "fail",
           "level": "note",
           "message": {
@@ -313,7 +220,47 @@
           }
         },
         {
-          "ruleId": "glog-44cf9796-4aed-4744-93d6-5837e357d76e",
+          "ruleId": "glog-25d85a9a-742a-41ac-918c-d1757755cfba",
+          "kind": "fail",
+          "level": "error",
+          "message": {
+            "text": "Avoid Using Weak or Non-Cryptographic Random Number Generators"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/header/TransferBench.hpp"
+                },
+                "region": {
+                  "startLine": 2471,
+                  "startColumn": 13,
+                  "endLine": 2471,
+                  "endColumn": 21,
+                  "charOffset": 102335,
+                  "charLength": 8,
+                  "snippet": {
+                    "text": "shuffle(",
+                    "rendered": {
+                      "text": "shuffle(",
+                      "markdown": "`shuffle(`"
+                    }
+                  },
+                  "sourceLanguage": "cpp"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "DevSkimSeverity": "Important",
+            "DevSkimConfidence": "High",
+            "tags": [
+              "Cryptography.PRNG.Weak"
+            ]
+          }
+        },
+        {
+          "ruleId": "glog-d07df416-c119-4ffe-923c-bb91125df9fe",
           "kind": "fail",
           "level": "note",
           "message": {
@@ -378,30 +325,30 @@
           }
         },
         {
-          "ruleId": "glog-c732c473-3070-4b55-a5a9-d22800ef8524",
+          "ruleId": "glog-eef758ac-21c6-4c2c-907f-18b966505c5c",
           "kind": "fail",
-          "level": "error",
+          "level": "note",
           "message": {
-            "text": "Avoid Using Weak or Non-Cryptographic Random Number Generators"
+            "text": "Detected Vulnerability in C Function (memcpy)"
           },
           "locations": [
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "src/client/Presets/Sweep.hpp"
+                  "uri": "src/header/TransferBench.hpp"
                 },
                 "region": {
-                  "startLine": 312,
-                  "startColumn": 11,
-                  "endLine": 312,
-                  "endColumn": 19,
-                  "charOffset": 13388,
-                  "charLength": 8,
+                  "startLine": 2173,
+                  "startColumn": 10,
+                  "endLine": 2173,
+                  "endColumn": 84,
+                  "charOffset": 89286,
+                  "charLength": 74,
                   "snippet": {
-                    "text": "shuffle(",
+                    "text": "memcpy(cpuBufferPtr, cfg.data.fillPattern.data(), leftOver * sizeof(float)",
                     "rendered": {
-                      "text": "shuffle(",
-                      "markdown": "`shuffle(`"
+                      "text": "memcpy(cpuBufferPtr, cfg.data.fillPattern.data(), leftOver * sizeof(float)",
+                      "markdown": "`memcpy(cpuBufferPtr, cfg.data.fillPattern.data(), leftOver * sizeof(float)`"
                     }
                   },
                   "sourceLanguage": "cpp"
@@ -409,16 +356,41 @@
               }
             }
           ],
+          "fixes": [
+            {
+              "description": {
+                "text": "There are a number of conditions in which memcpy can introduce a vulnerability (mismatched buffer sizes, null pointers, etc.). More secure alternitives perform additional validation of the source and destination buffer"
+              },
+              "artifactChanges": [
+                {
+                  "artifactLocation": {
+                    "uri": "src/header/TransferBench.hpp"
+                  },
+                  "replacements": [
+                    {
+                      "deletedRegion": {
+                        "charOffset": 89286,
+                        "charLength": 74
+                      },
+                      "insertedContent": {
+                        "text": "memcpy_s(cpuBufferPtr, <size of cpuBufferPtr>,  cfg.data.fillPattern.data(),  leftOver * sizeof(float)"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
           "properties": {
-            "DevSkimSeverity": "Important",
+            "DevSkimSeverity": "BestPractice",
             "DevSkimConfidence": "High",
             "tags": [
-              "Cryptography.PRNG.Weak"
+              "API.DangerousAPI.ProblematicFunction"
             ]
           }
         },
         {
-          "ruleId": "glog-bec09474-31ca-47a9-b52f-98c7f7c7aa31",
+          "ruleId": "glog-2d789269-2775-4900-9415-977e2277e25b",
           "kind": "fail",
           "level": "note",
           "message": {
@@ -506,7 +478,7 @@
           }
         },
         {
-          "ruleId": "glog-1bbe99df-2127-494d-855a-4aff37bd1bc1",
+          "ruleId": "glog-5b80e359-a67c-41a3-b8d7-055cb990fdaf",
           "kind": "fail",
           "level": "note",
           "message": {
@@ -594,7 +566,7 @@
           }
         },
         {
-          "ruleId": "glog-d0ae4582-d5a6-4ce5-bdc5-ba6b4a8f00fa",
+          "ruleId": "glog-05cdbd82-0479-4e32-866f-bf3645f37866",
           "kind": "fail",
           "level": "note",
           "message": {
@@ -682,7 +654,7 @@
           }
         },
         {
-          "ruleId": "glog-b43dcfc3-fd68-44b6-becb-081993f63caa",
+          "ruleId": "glog-a1afe8da-beb6-4c49-a009-e6c6c8fa6a9a",
           "kind": "fail",
           "level": "note",
           "message": {
@@ -770,7 +742,7 @@
           }
         },
         {
-          "ruleId": "glog-38233220-c23a-4586-b374-2b9d6cf33458",
+          "ruleId": "glog-42a26b4a-7818-4388-a172-bea2cbf909f9",
           "kind": "fail",
           "level": "note",
           "message": {
@@ -854,6 +826,134 @@
             "DevSkimConfidence": "High",
             "tags": [
               "API.DangerousAPI.ProblematicFunction"
+            ]
+          }
+        },
+        {
+          "ruleId": "glog-03d57739-e18d-4a44-b4f0-fa17e258ae49",
+          "kind": "fail",
+          "level": "note",
+          "message": {
+            "text": "Detected Vulnerability in C Function (strlen)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/client/EnvVars.hpp"
+                },
+                "region": {
+                  "startLine": 177,
+                  "startColumn": 23,
+                  "endLine": 177,
+                  "endColumn": 38,
+                  "charOffset": 9334,
+                  "charLength": 15,
+                  "snippet": {
+                    "text": "strlen(pattern)",
+                    "rendered": {
+                      "text": "strlen(pattern)",
+                      "markdown": "`strlen(pattern)`"
+                    }
+                  },
+                  "sourceLanguage": "cpp"
+                }
+              }
+            }
+          ],
+          "fixes": [
+            {
+              "description": {
+                "text": "If a string is missing a null terminator, strlen will read past the end of the buffer"
+              },
+              "artifactChanges": [
+                {
+                  "artifactLocation": {
+                    "uri": "src/client/EnvVars.hpp"
+                  },
+                  "replacements": [
+                    {
+                      "deletedRegion": {
+                        "charOffset": 9334,
+                        "charLength": 15
+                      },
+                      "insertedContent": {
+                        "text": "strlen_s(pattern, <size of pattern>)"
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "description": {
+                "text": "If a string is missing a null terminator, strlen will read past the end of the buffer"
+              },
+              "artifactChanges": [
+                {
+                  "artifactLocation": {
+                    "uri": "src/client/EnvVars.hpp"
+                  },
+                  "replacements": [
+                    {
+                      "deletedRegion": {
+                        "charOffset": 9334,
+                        "charLength": 15
+                      },
+                      "insertedContent": {
+                        "text": "strnlen(pattern, <size of pattern>)"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "DevSkimSeverity": "BestPractice",
+            "DevSkimConfidence": "High",
+            "tags": [
+              "API.DangerousAPI.ProblematicFunction"
+            ]
+          }
+        },
+        {
+          "ruleId": "glog-9f642a9d-bf00-4304-b96b-780f656fd116",
+          "kind": "fail",
+          "level": "error",
+          "message": {
+            "text": "Avoid Using Weak or Non-Cryptographic Random Number Generators"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/client/Presets/Sweep.hpp"
+                },
+                "region": {
+                  "startLine": 312,
+                  "startColumn": 11,
+                  "endLine": 312,
+                  "endColumn": 19,
+                  "charOffset": 13388,
+                  "charLength": 8,
+                  "snippet": {
+                    "text": "shuffle(",
+                    "rendered": {
+                      "text": "shuffle(",
+                      "markdown": "`shuffle(`"
+                    }
+                  },
+                  "sourceLanguage": "cpp"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "DevSkimSeverity": "Important",
+            "DevSkimConfidence": "High",
+            "tags": [
+              "Cryptography.PRNG.Weak"
             ]
           }
         }
