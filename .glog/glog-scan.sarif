@@ -12,58 +12,298 @@
           "informationUri": "https://www.glog.ai",
           "rules": [
             {
-              "id": "glog-102749f2-6bc9-465c-9839-50965d4a7767",
+              "id": "5bd42fdf-e1f0-320e-a23a-395db8b1cda0",
               "help": {
                 "text": "",
-                "markdown": "## Description\n\nThe `memcpy` function in C++ is used to copy a block of memory from one location to another. This function is vulnerable to buffer overflow attacks if the size of the data being copied is larger than the size of the destination buffer. In the provided code snippet, `memcpy(p.dst[i], src, p.N * sizeof(float))`, if `p.N * sizeof(float)` is larger than the size of `p.dst[i]`, it can lead to a buffer overflow.\n\nBuffer overflow vulnerabilities can lead to various security issues such as data corruption, crashes, and code execution. An attacker can exploit this vulnerability to execute arbitrary code or cause a denial of service.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, you should always ensure that the destination buffer is large enough to hold the data being copied. This can be done by checking the size of the destination buffer before calling `memcpy`.\n\n## Source Code Fix Recommendation\n\nHere is a recommended fix for the provided code snippet:\n\n```cpp\nif (p.N * sizeof(float) <= sizeof(p.dst[i])) {\n    memcpy(p.dst[i], src, p.N * sizeof(float));\n} else {\n    // Handle error\n}\n```\n\nIn this fix, we check if the size of the data being copied is less than or equal to the size of the destination buffer before calling `memcpy`. If the data is too large, we handle the error appropriately.\n\n## Library Dependencies\n\nThe `memcpy` function is part of the C Standard Library, so you need to include the `cstring` header file to use it:\n\n```cpp\n#include <cstring>\n```\n\n## OWASP Resources\n\n- [Buffer Overflow](https://owasp.org/www-community/vulnerabilities/Buffer_Overflow)\n- [CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow')](https://cwe.mitre.org/data/definitions/120.html)\n\nPlease note that the links provided are valid and active at the time of writing this report."
+                "markdown": "## Description\n\n\"Detected Prohibited C Function\" vulnerability in C++ refers to the use of insecure or deprecated C library functions that can lead to various security issues such as buffer overflows, format string vulnerabilities, integer overflows, etc. In the given code snippet, the vulnerability does not seem to be directly related to a prohibited C function, but rather to a potential integer overflow issue.\n\nIf `numDevices` is 0, then `numDevices - 1` will result in a negative number, which can lead to unexpected behavior if used as an array index or loop boundary.\n\n## Mitigation Advice\n\nTo mitigate this type of vulnerability, it's important to always validate and sanitize inputs, and to use secure alternatives to deprecated or insecure C functions. In this case, you should ensure that `numDevices` is greater than 0 before subtracting 1 from it.\n\n## Source Code Fix Recommendation\n\nHere is a simple fix for the given code snippet:\n\n```cpp\nif (numDevices > 0) {\n    src < numDevices - 1\n}\n```\n\nThis ensures that `numDevices - 1` will not result in a negative number.\n\n## Library Dependencies\n\nThe given code snippet does not appear to require any specific library dependencies.\n\n## OWASP and CWE Links\n\n- [CWE-190: Integer Overflow or Wraparound](https://cwe.mitre.org/data/definitions/190.html)\n\nPlease note that the links provided are valid and active at the time of writing this report."
               },
               "properties": {
                 "tags": [
-                  "DS121708"
+                  "DS154189"
                 ]
               }
             },
             {
-              "id": "glog-25d85a9a-742a-41ac-918c-d1757755cfba",
+              "id": "931b3ea3-191e-3306-8e75-10edf555689b",
               "help": {
                 "text": "",
-                "markdown": "### Description\n\nIn C++ programming, using weak or non-cryptographic random number generators can lead to vulnerabilities, especially in security-sensitive applications. Functions like `rand()` from the C standard library are not suitable for cryptographic purposes because they produce predictable sequences of numbers. This predictability can be exploited by attackers to compromise the security of the application.\n\n### General Mitigation Advice\n\nTo mitigate this vulnerability, use a cryptographically secure random number generator. In C++, the `<random>` library provides better alternatives, but for cryptographic purposes, consider using libraries like OpenSSL or libsodium that offer cryptographically secure random number generation.\n\n### Source Code Fix Recommendation\n\n#### Vulnerable Code\n\n```cpp\n#include <algorithm>\n#include <vector>\n#include <cstdlib> // For rand()\n\nvoid shuffleVector(std::vector<int>& vec) {\n    std::random_shuffle(vec.begin(), vec.end());\n}\n```\n\n#### Fixed Code\n\n```cpp\n#include <algorithm>\n#include <vector>\n#include <random> // For std::random_device and std::mt19937\n\nvoid shuffleVector(std::vector<int>& vec) {\n    std::random_device rd;\n    std::mt19937 g(rd());\n    std::shuffle(vec.begin(), vec.end(), g);\n}\n```\n\n### Library Dependencies\n\n- `<algorithm>`: Required for `std::shuffle`.\n- `<vector>`: Required for using `std::vector`.\n- `<random>`: Required for `std::random_device` and `std::mt19937`.\n\n### OWASP Resources\n\n- [OWASP Cryptographic Storage Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Cryptographic_Storage_Cheat_Sheet.html)\n\n### Common Weakness Enumeration (CWE)\n\n- [CWE-338: Use of Cryptographically Weak Pseudo-Random Number Generator (PRNG)](https://cwe.mitre.org/data/definitions/338.html)"
+                "markdown": "## Description\n\n\"Prohibited C Function Found\" is a vulnerability that occurs when a C++ program uses a function that is considered unsafe due to its potential to cause buffer overflows, memory corruption, or other security issues. These functions are often part of the C Standard Library and are included for backwards compatibility, but their use is discouraged in modern programming.\n\nIn the provided code snippet, the vulnerability sink is `ev.outputToCsv`. Without more context, it's hard to say exactly what the issue is, but if `outputToCsv` is a function that writes to a file or sends data over a network, it could potentially be used to execute a buffer overflow attack or other form of exploitation.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, avoid using unsafe C functions in your C++ code. Instead, use safer alternatives provided by the C++ Standard Library. For example, instead of using `strcpy`, use `std::string`. Instead of `sprintf`, use `std::ostringstream`. \n\nIf you must use a potentially unsafe function, make sure to validate and sanitize all inputs to the function. Never trust user input without validation.\n\n## Source Code Fix Recommendation\n\nWithout more context, it's hard to provide a specific fix. However, if `outputToCsv` is a function that writes to a file, a safer alternative might be to use the C++ file I/O functions:\n\n```cpp\n#include <fstream>\n\n// ...\n\nstd::ofstream file(\"output.csv\");\nif (file.is_open()) {\n    file << ev;\n    file.close();\n} else {\n    // Handle error\n}\n```\n\n## Library Dependencies\n\nWithout more context, it's hard to say what library dependencies are required. However, if the `outputToCsv` function is part of a library, that library would be a dependency. The C++ Standard Library is also a likely dependency.\n\n## OWASP and CWE Links\n\n- [CWE-676: Use of Potentially Dangerous Function](https://cwe.mitre.org/data/definitions/676.html)\n\nPlease note that these links are subject to change and may not be accessible to all users."
               },
               "properties": {
                 "tags": [
-                  "DS148264"
+                  "DS154189"
                 ]
               }
             },
             {
-              "id": "glog-d07df416-c119-4ffe-923c-bb91125df9fe",
+              "id": "fba98b0f-3327-3d1b-a2c4-ebb1d5050b00",
               "help": {
                 "text": "",
-                "markdown": "## Description\n\nThe `memcpy` function in C++ is used to copy a block of memory from one location to another. This function does not check for the size of the destination buffer, which can lead to buffer overflow if the source data is larger than the destination buffer. This is a common vulnerability in C++ programming that can lead to serious security issues such as data corruption, system crash, or even arbitrary code execution.\n\nIn the provided code snippet, the vulnerability lies in the fact that the size of the data being copied (`patternLen * sizeof(float)`) might exceed the size of the destination buffer (`cpuBufferPtr`).\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, you should always ensure that the destination buffer is large enough to hold the data being copied. This can be done by checking the size of the destination buffer before calling `memcpy`.\n\nAdditionally, consider using safer alternatives to `memcpy` such as `strncpy` or `memcpy_s` (in C11), which take the size of the destination buffer as an argument and ensure that no buffer overflow occurs.\n\n## Source Code Fix Recommendation\n\nHere is a recommended fix for the provided code snippet:\n\n```cpp\nsize_t bufferSize = /* size of cpuBufferPtr buffer */;\nsize_t dataSize = patternLen * sizeof(float);\n\nif (dataSize <= bufferSize) {\n    memcpy(cpuBufferPtr, cfg.data.fillPattern.data(), dataSize);\n} else {\n    // Handle error: source data is too large for the destination buffer\n}\n```\n\n## Library Dependencies\n\nThe provided code snippet requires the following library dependencies:\n\n- `<cstring>`: for the `memcpy` function\n- `<cstddef>`: for the `size_t` type\n\n## OWASP Resources\n\n- [Buffer Overflow](https://owasp.org/www-community/vulnerabilities/Buffer_Overflow)\n\n## Common Weakness Enumeration (CWE)\n\n- [CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow')](https://cwe.mitre.org/data/definitions/120.html)\n- [CWE-119: Improper Restriction of Operations within the Bounds of a Memory Buffer](https://cwe.mitre.org/data/definitions/119.html)"
+                "markdown": "## Description\n\n\"Detected Prohibited C Function\" vulnerability in C++ refers to the use of insecure or unsafe C library functions that can lead to various security issues such as buffer overflows, format string vulnerabilities, integer overflows, etc. These functions are often prohibited because they do not perform bounds checking or other necessary validation, making them susceptible to exploitation.\n\nIn the provided code snippet, there is no direct use of a prohibited C function. However, the comparison operation could potentially lead to logical errors or unexpected behavior if not properly handled.\n\n## Mitigation Advice\n\nTo mitigate such vulnerabilities, it is recommended to:\n\n- Avoid using prohibited C functions. Instead, use safer alternatives that perform necessary validation checks.\n- Always validate and sanitize input data.\n- Use secure coding practices and follow coding standards.\n- Regularly perform code reviews and use static code analysis tools to detect potential vulnerabilities.\n\n## Source Code Fix Recommendation\n\nThe provided code snippet is a comparison operation and does not directly involve any prohibited C function. However, if `dst` and `numCpuDevices` are results of some function calls or calculations, it is recommended to check the return values and handle any errors appropriately. For example:\n\n```cpp\nif (dst == numCpuDevices) {\n    if (dst != 0) {\n        // Proceed with the operation\n    } else {\n        // Handle the error\n    }\n} else {\n    // Handle the error\n}\n```\n\n## Library Dependencies\n\nThe provided code snippet does not require any specific library dependencies to execute properly.\n\n## References\n\n- [OWASP Secure Coding Practices](https://owasp.org/www-project-secure-coding-practices-quick-reference-guide/)\n- [CWE-676: Use of Potentially Dangerous Function](https://cwe.mitre.org/data/definitions/676.html)\n\nPlease note that the provided links are active and accessible for anonymous users at the time of writing this report."
               },
               "properties": {
                 "tags": [
-                  "DS121708"
+                  "DS154189"
                 ]
               }
             },
             {
-              "id": "glog-eef758ac-21c6-4c2c-907f-18b966505c5c",
+              "id": "c7509b5a-ac08-39f2-91d4-af6a9780d3db",
               "help": {
                 "text": "",
-                "markdown": "## Description\n\nThe `memcpy` function in C++ is used to copy a block of memory from one location to another. This function does not check for the size of the destination buffer, which can lead to buffer overflow if the source is larger than the destination. This is a common vulnerability in C++ programming, often exploited to execute arbitrary code, alter the intended program flow, or cause a program crash.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, it is recommended to always ensure that the destination buffer is large enough to hold the data being copied. This can be done by checking the size of the source and destination before calling `memcpy`. Alternatively, consider using safer functions that include buffer size checks, such as `strncpy` or `memcpy_s` (in C11).\n\n## Source Code Fix Recommendation\n\nReplace the `memcpy` function with a safer alternative that includes buffer size checks. For example, you can use `std::copy` from the `<algorithm>` library in C++:\n\n```cpp\n#include <algorithm>\n\nstd::copy(cfg.data.fillPattern.data(), cfg.data.fillPattern.data() + leftOver, cpuBufferPtr);\n```\n\n## Library Dependencies\n\nThe code example requires the following library dependencies:\n\n- `<cstring>` for `memcpy`\n- `<algorithm>` for `std::copy`\n\n## OWASP and CWE Links\n\n- [OWASP C++](https://owasp.org/www-pdf-archive/OWASP_SCP_Quick_Reference_Guide_v2.pdf)\n- [CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow')](https://cwe.mitre.org/data/definitions/120.html)\n\nPlease note that these links are subject to change and may not always be accessible. Always check the validity of the links before using them."
+                "markdown": "## Description\n\n\"Detected Prohibited C Function\" vulnerability in C++ refers to the use of certain C standard library functions that are known to be dangerous due to their potential to cause buffer overflows, format string vulnerabilities, or other problems. These functions are often prohibited in secure coding standards. In the provided code snippet, the function `outputToCsv` is flagged as potentially dangerous.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, it is recommended to avoid using prohibited C functions. Instead, use safer alternatives provided by the C++ Standard Library or other trusted libraries. Always validate and sanitize input data before processing it. Also, consider using automated tools to detect and prevent the use of prohibited functions.\n\n## Source Code Fix Recommendation\n\nWithout the full context of the code, it's hard to provide a specific fix. However, if `outputToCsv` is a custom function that uses prohibited C functions internally, you should revise its implementation to avoid them. If it's a prohibited function itself, you should replace it with a safer alternative.\n\n## Library Dependencies\n\nThe specific library dependencies required by the code example cannot be determined from the provided snippet. However, if `outputToCsv` is a function from a specific library, that library would be a dependency.\n\n## References\n\n- [OWASP Proactive Controls](https://owasp.org/www-project-proactive-controls/)\n- [CWE-676: Use of Potentially Dangerous Function](https://cwe.mitre.org/data/definitions/676.html)\n\nPlease note that the links provided are active and accessible for anonymous users at the time of writing this report."
               },
               "properties": {
                 "tags": [
-                  "DS121708"
+                  "DS154189"
                 ]
               }
             },
             {
-              "id": "glog-2d789269-2775-4900-9415-977e2277e25b",
+              "id": "9b2d6eeb-2690-323c-af21-a1101d093c73",
               "help": {
                 "text": "",
-                "markdown": "## Description\n\nThe `strlen` function in C++ is used to find the length of a string. However, it can lead to vulnerabilities if not used properly. The function counts the number of characters in a string until it reaches a null character (`\\0`). If the string is not properly null-terminated, `strlen` will continue reading memory until it encounters a null character, potentially leading to buffer overflows or information leaks.\n\nIn the provided code snippet, `strlen(\"RoCE v2\")`, there is no direct vulnerability as the string is a string literal which is automatically null-terminated by the compiler. However, if the string was user input or read from an untrusted source, it could potentially not be null-terminated and lead to a vulnerability.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, always ensure that strings are properly null-terminated before passing them to `strlen`. If the string is user input or from an untrusted source, consider using safer alternatives such as `strnlen`, which takes a maximum length parameter and will not read past this length, even if it does not encounter a null character.\n\n## Source Code Fix Recommendation\n\nIn the provided code snippet, no fix is necessary as the string is a string literal and automatically null-terminated. However, if the string was user input or from an untrusted source, a safer alternative such as `strnlen` could be used:\n\n```cpp\nconst char* str = /* untrusted input */;\nsize_t len = strnlen(str, MAX_LENGTH);\n```\n\n## Library Dependencies\n\nThe `strlen` function is part of the C standard library (`<cstring>` in C++), so no additional library dependencies are required.\n\n## References\n\n- [OWASP C++ Secure Coding Practices](https://cheatsheetseries.owasp.org/cheatsheets/C-Based_Toolchain_Hardening_Cheat_Sheet.html)\n- [CWE-126: Buffer Over-read](https://cwe.mitre.org/data/definitions/126.html)\n\nPlease note that the links provided are accessible to anonymous users at the time of writing this report."
+                "markdown": "## Description\n\n\"Prohibited C Function Found\" is a vulnerability that occurs when a C++ program uses a function that is considered unsafe due to its potential to cause buffer overflows, memory corruption, or other security issues. These functions are often part of the C Standard Library and are included for backwards compatibility, but their use is discouraged in modern programming.\n\nIn the provided code snippet, the vulnerability sink is `ev.outputToCsv`. Without more context, it's hard to say exactly what the issue is, but if `outputToCsv` is a function that writes to a file or sends data over a network, it could potentially be used to execute a buffer overflow attack or other form of exploitation.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, avoid using unsafe C functions in your C++ code. Instead, use safer alternatives provided by the C++ Standard Library. For example, instead of using `strcpy`, use `std::string`. Instead of `sprintf`, use `std::ostringstream`. \n\nIf you must use a potentially unsafe function, make sure to validate and sanitize all inputs to the function. Never trust user input without validation.\n\n## Source Code Fix Recommendation\n\nWithout more context, it's hard to provide a specific fix. However, if `outputToCsv` is a function that writes to a file, a safer alternative might be to use the C++ file I/O functions:\n\n```cpp\n#include <fstream>\n\n// ...\n\nstd::ofstream file(\"output.csv\");\nif (file.is_open()) {\n    file << ev;\n    file.close();\n} else {\n    // Handle error\n}\n```\n\n## Library Dependencies\n\nWithout more context, it's hard to say what library dependencies are required. However, if the `outputToCsv` function is part of a library, that library would be a dependency. The C++ Standard Library is also a likely dependency.\n\n## OWASP and CWE Links\n\n- [CWE-676: Use of Potentially Dangerous Function](https://cwe.mitre.org/data/definitions/676.html)\n\nPlease note that these links are subject to change and may not be accessible to all users."
+              },
+              "properties": {
+                "tags": [
+                  "DS154189"
+                ]
+              }
+            },
+            {
+              "id": "db77f2b6-bc78-3844-a7d2-3646c7b55681",
+              "help": {
+                "text": "",
+                "markdown": "## Description\n\n\"Prohibited C Function Found\" is a vulnerability that occurs when a C++ program uses a function that is considered unsafe due to its potential to cause buffer overflows, memory corruption, or other security issues. These functions are often part of the C Standard Library and are included for backwards compatibility, but their use is discouraged in modern programming.\n\nIn the provided code snippet, the vulnerability sink is `ev.outputToCsv`. Without more context, it's hard to say exactly what the issue is, but if `outputToCsv` is a function that writes to a file or sends data over a network, it could potentially be used to execute a buffer overflow attack or other form of exploitation.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, avoid using unsafe C functions in your C++ code. Instead, use safer alternatives provided by the C++ Standard Library. For example, instead of using `strcpy`, use `std::string`. Instead of `sprintf`, use `std::ostringstream`. \n\nIf you must use a potentially unsafe function, make sure to validate and sanitize all inputs to the function. Never trust user input without validation.\n\n## Source Code Fix Recommendation\n\nWithout more context, it's hard to provide a specific fix. However, if `outputToCsv` is a function that writes to a file, a safer alternative might be to use the C++ file I/O functions:\n\n```cpp\n#include <fstream>\n\n// ...\n\nstd::ofstream file(\"output.csv\");\nif (file.is_open()) {\n    file << ev;\n    file.close();\n} else {\n    // Handle error\n}\n```\n\n## Library Dependencies\n\nWithout more context, it's hard to say what library dependencies are required. However, if the `outputToCsv` function is part of a library, that library would be a dependency. The C++ Standard Library is also a likely dependency.\n\n## OWASP and CWE Links\n\n- [CWE-676: Use of Potentially Dangerous Function](https://cwe.mitre.org/data/definitions/676.html)\n\nPlease note that these links are subject to change and may not be accessible to all users."
+              },
+              "properties": {
+                "tags": [
+                  "DS154189"
+                ]
+              }
+            },
+            {
+              "id": "daed3092-3ab9-38e1-ba61-044749172b23",
+              "help": {
+                "text": "",
+                "markdown": "## Description\n\n\"Prohibited C Function Found\" is a vulnerability that occurs when a C++ program uses a function that is considered unsafe due to its potential to cause buffer overflows, memory corruption, or other security issues. These functions are often part of the C Standard Library and are included for backwards compatibility, but their use is discouraged in modern programming.\n\nIn the provided code snippet, the vulnerability sink is `ev.outputToCsv`. Without more context, it's hard to say exactly what the issue is, but if `outputToCsv` is a function that writes to a file or sends data over a network, it could potentially be used to execute a buffer overflow attack or other form of exploitation.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, avoid using unsafe C functions in your C++ code. Instead, use safer alternatives provided by the C++ Standard Library. For example, instead of using `strcpy`, use `std::string`. Instead of `sprintf`, use `std::ostringstream`. \n\nIf you must use a potentially unsafe function, make sure to validate and sanitize all inputs to the function. Never trust user input without validation.\n\n## Source Code Fix Recommendation\n\nWithout more context, it's hard to provide a specific fix. However, if `outputToCsv` is a function that writes to a file, a safer alternative might be to use the C++ file I/O functions:\n\n```cpp\n#include <fstream>\n\n// ...\n\nstd::ofstream file(\"output.csv\");\nif (file.is_open()) {\n    file << ev;\n    file.close();\n} else {\n    // Handle error\n}\n```\n\n## Library Dependencies\n\nWithout more context, it's hard to say what library dependencies are required. However, if the `outputToCsv` function is part of a library, that library would be a dependency. The C++ Standard Library is also a likely dependency.\n\n## OWASP and CWE Links\n\n- [CWE-676: Use of Potentially Dangerous Function](https://cwe.mitre.org/data/definitions/676.html)\n\nPlease note that these links are subject to change and may not be accessible to all users."
+              },
+              "properties": {
+                "tags": [
+                  "DS154189"
+                ]
+              }
+            },
+            {
+              "id": "a3cead6e-54e7-3719-876e-53a128e20913",
+              "help": {
+                "text": "",
+                "markdown": "## Description\n\n\"Detected Prohibited C Function\" vulnerability in C++ refers to the use of insecure or unsafe C library functions that can lead to various security issues such as buffer overflows, format string vulnerabilities, integer overflows, etc. These functions are often prohibited because they do not perform bounds checking or other necessary validation, making them susceptible to exploitation.\n\nIn the provided code snippet, there is no direct use of prohibited C functions. However, the logical comparison could potentially lead to logical flaws if not properly validated.\n\n## Mitigation Advice\n\nTo mitigate this type of vulnerability, it is recommended to:\n\n1. Avoid using prohibited C functions. Use safer alternatives whenever possible.\n2. Always validate and sanitize input data.\n3. Use secure coding practices and follow the principle of least privilege.\n4. Regularly update and patch your software to fix any known vulnerabilities.\n\n## Source Code Fix Recommendation\n\nIn the provided code snippet, there is no direct use of prohibited C functions. However, to ensure the logical comparison is safe, you should validate the variables `i` and `numCpuDevices` before the comparison. Here is an example:\n\n```cpp\nif (i >= 0 && numCpuDevices >= 0) {\n    if (i == numCpuDevices && i != 0) {\n        // Your code here\n    }\n}\n```\n\n## Library Dependencies\n\nThe provided code snippet does not appear to require any specific library dependencies to execute properly.\n\n## References\n\n- [OWASP Secure Coding Practices](https://owasp.org/www-project-secure-coding-practices-quick-reference-guide/)\n- [OWASP C++ Secure Coding Practices](https://cheatsheetseries.owasp.org/cheatsheets/C-Based_Toolchain_Hardening_Cheat_Sheet.html)\n\n## Matching CWE\n\n- [CWE-676: Use of Potentially Dangerous Function](https://cwe.mitre.org/data/definitions/676.html)\n\nPlease note that the links provided are active and accessible to anonymous users at the time of writing this report."
+              },
+              "properties": {
+                "tags": [
+                  "DS154189"
+                ]
+              }
+            },
+            {
+              "id": "ca3ddb02-af8f-37b2-84dc-400de9be822a",
+              "help": {
+                "text": "",
+                "markdown": "## Description\n\n\"Prohibited C Function Found\" is a vulnerability that occurs when a C++ program uses a function that is considered unsafe due to its potential to cause buffer overflows, memory corruption, or other security issues. These functions are often part of the C Standard Library and are included for backwards compatibility, but their use is discouraged in modern programming.\n\nIn the provided code snippet, the vulnerability sink is `ev.outputToCsv`. Without more context, it's hard to say exactly what the issue is, but if `outputToCsv` is a function that writes to a file or sends data over a network, it could potentially be used to execute a buffer overflow attack or other form of exploitation.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, avoid using unsafe C functions in your C++ code. Instead, use safer alternatives provided by the C++ Standard Library. For example, instead of using `strcpy`, use `std::string`. Instead of `sprintf`, use `std::ostringstream`. \n\nIf you must use a potentially unsafe function, make sure to validate and sanitize all inputs to the function. Never trust user input without validation.\n\n## Source Code Fix Recommendation\n\nWithout more context, it's hard to provide a specific fix. However, if `outputToCsv` is a function that writes to a file, a safer alternative might be to use the C++ file I/O functions:\n\n```cpp\n#include <fstream>\n\n// ...\n\nstd::ofstream file(\"output.csv\");\nif (file.is_open()) {\n    file << ev;\n    file.close();\n} else {\n    // Handle error\n}\n```\n\n## Library Dependencies\n\nWithout more context, it's hard to say what library dependencies are required. However, if the `outputToCsv` function is part of a library, that library would be a dependency. The C++ Standard Library is also a likely dependency.\n\n## OWASP and CWE Links\n\n- [CWE-676: Use of Potentially Dangerous Function](https://cwe.mitre.org/data/definitions/676.html)\n\nPlease note that these links are subject to change and may not be accessible to all users."
+              },
+              "properties": {
+                "tags": [
+                  "DS154189"
+                ]
+              }
+            },
+            {
+              "id": "50f6eb33-8a1c-326e-9a2f-ade84f7dc78b",
+              "help": {
+                "text": "",
+                "markdown": "## Description\n\n\"Detected Prohibited C Function\" vulnerability in C++ refers to the use of insecure or unsafe C library functions that can lead to various security issues such as buffer overflows, format string vulnerabilities, integer overflows, etc. These functions are often prohibited because they do not perform bounds checking or other necessary validation, making them susceptible to exploitation.\n\nIn the provided code snippet, there is no direct use of prohibited C functions. However, the logical comparison could potentially lead to logical flaws if not properly validated.\n\n## Mitigation Advice\n\nTo mitigate this type of vulnerability, it is recommended to:\n\n1. Avoid using prohibited C functions. Use safer alternatives whenever possible.\n2. Always validate and sanitize input data.\n3. Use secure coding practices and follow the principle of least privilege.\n4. Regularly update and patch your software to fix any known vulnerabilities.\n\n## Source Code Fix Recommendation\n\nIn the provided code snippet, there is no direct use of prohibited C functions. However, to ensure the logical comparison is safe, you should validate the variables `i` and `numCpuDevices` before the comparison. Here is an example:\n\n```cpp\nif (i >= 0 && numCpuDevices >= 0) {\n    if (i == numCpuDevices && i != 0) {\n        // Your code here\n    }\n}\n```\n\n## Library Dependencies\n\nThe provided code snippet does not appear to require any specific library dependencies to execute properly.\n\n## References\n\n- [OWASP Secure Coding Practices](https://owasp.org/www-project-secure-coding-practices-quick-reference-guide/)\n- [OWASP C++ Secure Coding Practices](https://cheatsheetseries.owasp.org/cheatsheets/C-Based_Toolchain_Hardening_Cheat_Sheet.html)\n\n## Matching CWE\n\n- [CWE-676: Use of Potentially Dangerous Function](https://cwe.mitre.org/data/definitions/676.html)\n\nPlease note that the links provided are active and accessible to anonymous users at the time of writing this report."
+              },
+              "properties": {
+                "tags": [
+                  "DS154189"
+                ]
+              }
+            },
+            {
+              "id": "7934f334-36f4-3784-bd03-d96334c3dcea",
+              "help": {
+                "text": "",
+                "markdown": "## Description\n\n\"Prohibited C Function Found\" is a vulnerability that occurs when a C++ program uses a function that is considered unsafe due to its potential to cause buffer overflows, memory corruption, or other security issues. These functions are often part of the C Standard Library and are included for backwards compatibility, but their use is discouraged in modern programming.\n\nIn the provided code snippet, the vulnerability sink is `ev.outputToCsv`. Without more context, it's hard to say exactly what the issue is, but if `outputToCsv` is a function that writes to a file or sends data over a network, it could potentially be used to execute a buffer overflow attack or other form of exploitation.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, avoid using unsafe C functions in your C++ code. Instead, use safer alternatives provided by the C++ Standard Library. For example, instead of using `strcpy`, use `std::string`. Instead of `sprintf`, use `std::ostringstream`. \n\nIf you must use a potentially unsafe function, make sure to validate and sanitize all inputs to the function. Never trust user input without validation.\n\n## Source Code Fix Recommendation\n\nWithout more context, it's hard to provide a specific fix. However, if `outputToCsv` is a function that writes to a file, a safer alternative might be to use the C++ file I/O functions:\n\n```cpp\n#include <fstream>\n\n// ...\n\nstd::ofstream file(\"output.csv\");\nif (file.is_open()) {\n    file << ev;\n    file.close();\n} else {\n    // Handle error\n}\n```\n\n## Library Dependencies\n\nWithout more context, it's hard to say what library dependencies are required. However, if the `outputToCsv` function is part of a library, that library would be a dependency. The C++ Standard Library is also a likely dependency.\n\n## OWASP and CWE Links\n\n- [CWE-676: Use of Potentially Dangerous Function](https://cwe.mitre.org/data/definitions/676.html)\n\nPlease note that these links are subject to change and may not be accessible to all users."
+              },
+              "properties": {
+                "tags": [
+                  "DS154189"
+                ]
+              }
+            },
+            {
+              "id": "82f75276-a546-303a-9a7b-f8b7fc48374f",
+              "help": {
+                "text": "",
+                "markdown": "## Description\n\n\"Detected Prohibited C Function\" vulnerability in C++ refers to the use of insecure or unsafe C library functions that can lead to various security issues such as buffer overflows, format string vulnerabilities, integer overflows, etc. These functions are often prohibited because they do not perform bounds checking or other necessary validation, making them susceptible to exploitation.\n\nIn the provided code snippet, there is no direct use of prohibited C functions. However, the logical comparison could potentially lead to logical flaws if not properly validated.\n\n## Mitigation Advice\n\nTo mitigate this type of vulnerability, it is recommended to:\n\n1. Avoid using prohibited C functions. Use safer alternatives whenever possible.\n2. Always validate and sanitize input data.\n3. Use secure coding practices and follow the principle of least privilege.\n4. Regularly update and patch your software to fix any known vulnerabilities.\n\n## Source Code Fix Recommendation\n\nIn the provided code snippet, there is no direct use of prohibited C functions. However, to ensure the logical comparison is safe, you should validate the variables `i` and `numCpuDevices` before the comparison. Here is an example:\n\n```cpp\nif (i >= 0 && numCpuDevices >= 0) {\n    if (i == numCpuDevices && i != 0) {\n        // Your code here\n    }\n}\n```\n\n## Library Dependencies\n\nThe provided code snippet does not appear to require any specific library dependencies to execute properly.\n\n## References\n\n- [OWASP Secure Coding Practices](https://owasp.org/www-project-secure-coding-practices-quick-reference-guide/)\n- [OWASP C++ Secure Coding Practices](https://cheatsheetseries.owasp.org/cheatsheets/C-Based_Toolchain_Hardening_Cheat_Sheet.html)\n\n## Matching CWE\n\n- [CWE-676: Use of Potentially Dangerous Function](https://cwe.mitre.org/data/definitions/676.html)\n\nPlease note that the links provided are active and accessible to anonymous users at the time of writing this report."
+              },
+              "properties": {
+                "tags": [
+                  "DS154189"
+                ]
+              }
+            },
+            {
+              "id": "6b77b512-1cc4-3938-b76e-7f6b8822e30c",
+              "help": {
+                "text": "",
+                "markdown": "## Description\n\n\"Detected Prohibited C Function\" vulnerability in C++ refers to the use of insecure or unsafe C library functions that can lead to various security issues such as buffer overflows, format string vulnerabilities, integer overflows, etc. These functions are often prohibited because they do not perform bounds checking or other necessary validation, making them susceptible to exploitation.\n\nIn the provided code snippet, there is no direct use of a prohibited C function. However, the comparison operation could potentially lead to logical errors or unexpected behavior if not properly handled.\n\n## Mitigation Advice\n\nTo mitigate such vulnerabilities, it is recommended to:\n\n- Avoid using prohibited C functions. Instead, use safer alternatives that perform necessary validation checks.\n- Always validate and sanitize input data.\n- Use secure coding practices and follow coding standards.\n- Regularly perform code reviews and use static code analysis tools to detect potential vulnerabilities.\n\n## Source Code Fix Recommendation\n\nThe provided code snippet is a comparison operation and does not directly involve any prohibited C function. However, if `dst` and `numCpuDevices` are results of some function calls or calculations, it is recommended to check the return values and handle any errors appropriately. For example:\n\n```cpp\nif (dst == numCpuDevices) {\n    if (dst != 0) {\n        // Proceed with the operation\n    } else {\n        // Handle the error\n    }\n} else {\n    // Handle the error\n}\n```\n\n## Library Dependencies\n\nThe provided code snippet does not require any specific library dependencies to execute properly.\n\n## References\n\n- [OWASP Secure Coding Practices](https://owasp.org/www-project-secure-coding-practices-quick-reference-guide/)\n- [CWE-676: Use of Potentially Dangerous Function](https://cwe.mitre.org/data/definitions/676.html)\n\nPlease note that the provided links are active and accessible for anonymous users at the time of writing this report."
+              },
+              "properties": {
+                "tags": [
+                  "DS154189"
+                ]
+              }
+            },
+            {
+              "id": "6671e910-e97c-360e-a9f6-a9b412b08ddc",
+              "help": {
+                "text": "",
+                "markdown": "## Description\n\n\"Prohibited C Function Found\" is a vulnerability that occurs when a C++ program uses a function that is considered unsafe due to its potential to cause buffer overflows, memory corruption, or other security issues. These functions are often part of the C Standard Library and are included for backwards compatibility, but their use is discouraged in modern programming.\n\nIn the provided code snippet, the vulnerability sink is `ev.outputToCsv`. Without more context, it's hard to say exactly what the issue is, but if `outputToCsv` is a function that writes to a file or sends data over a network, it could potentially be used to execute a buffer overflow attack or other form of exploitation.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, avoid using unsafe C functions in your C++ code. Instead, use safer alternatives provided by the C++ Standard Library. For example, instead of using `strcpy`, use `std::string`. Instead of `sprintf`, use `std::ostringstream`. \n\nIf you must use a potentially unsafe function, make sure to validate and sanitize all inputs to the function. Never trust user input without validation.\n\n## Source Code Fix Recommendation\n\nWithout more context, it's hard to provide a specific fix. However, if `outputToCsv` is a function that writes to a file, a safer alternative might be to use the C++ file I/O functions:\n\n```cpp\n#include <fstream>\n\n// ...\n\nstd::ofstream file(\"output.csv\");\nif (file.is_open()) {\n    file << ev;\n    file.close();\n} else {\n    // Handle error\n}\n```\n\n## Library Dependencies\n\nWithout more context, it's hard to say what library dependencies are required. However, if the `outputToCsv` function is part of a library, that library would be a dependency. The C++ Standard Library is also a likely dependency.\n\n## OWASP and CWE Links\n\n- [CWE-676: Use of Potentially Dangerous Function](https://cwe.mitre.org/data/definitions/676.html)\n\nPlease note that these links are subject to change and may not be accessible to all users."
+              },
+              "properties": {
+                "tags": [
+                  "DS154189"
+                ]
+              }
+            },
+            {
+              "id": "eda3db78-2f94-32b3-a91e-f33546892bc6",
+              "help": {
+                "text": "",
+                "markdown": "## Description\n\n\"Prohibited C Function Found\" is a vulnerability that occurs when a C++ program uses a function that is considered unsafe due to its potential to cause buffer overflows, memory corruption, or other security issues. These functions are often part of the C Standard Library and are included for backwards compatibility, but their use is discouraged in modern programming.\n\nIn the provided code snippet, the vulnerability sink is `ev.outputToCsv`. Without more context, it's hard to say exactly what the issue is, but if `outputToCsv` is a function that writes to a file or sends data over a network, it could potentially be used to execute a buffer overflow attack or other form of exploitation.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, avoid using unsafe C functions in your C++ code. Instead, use safer alternatives provided by the C++ Standard Library. For example, instead of using `strcpy`, use `std::string`. Instead of `sprintf`, use `std::ostringstream`. \n\nIf you must use a potentially unsafe function, make sure to validate and sanitize all inputs to the function. Never trust user input without validation.\n\n## Source Code Fix Recommendation\n\nWithout more context, it's hard to provide a specific fix. However, if `outputToCsv` is a function that writes to a file, a safer alternative might be to use the C++ file I/O functions:\n\n```cpp\n#include <fstream>\n\n// ...\n\nstd::ofstream file(\"output.csv\");\nif (file.is_open()) {\n    file << ev;\n    file.close();\n} else {\n    // Handle error\n}\n```\n\n## Library Dependencies\n\nWithout more context, it's hard to say what library dependencies are required. However, if the `outputToCsv` function is part of a library, that library would be a dependency. The C++ Standard Library is also a likely dependency.\n\n## OWASP and CWE Links\n\n- [CWE-676: Use of Potentially Dangerous Function](https://cwe.mitre.org/data/definitions/676.html)\n\nPlease note that these links are subject to change and may not be accessible to all users."
+              },
+              "properties": {
+                "tags": [
+                  "DS154189"
+                ]
+              }
+            },
+            {
+              "id": "84e04fc0-0056-31eb-8083-38e9534cff3a",
+              "help": {
+                "text": "",
+                "markdown": "## Description\n\n\"Prohibited C Function Found\" is a vulnerability that occurs when a C++ program uses a function that is considered unsafe due to its potential to cause buffer overflows, memory corruption, or other security issues. These functions are often part of the C Standard Library and are included for backwards compatibility, but their use is discouraged in modern programming.\n\nIn the provided code snippet, the vulnerability sink is `ev.outputToCsv`. Without more context, it's hard to say exactly what the issue is, but if `outputToCsv` is a function that writes to a file or sends data over a network, it could potentially be used to execute a buffer overflow attack or other form of exploitation.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, avoid using unsafe C functions in your C++ code. Instead, use safer alternatives provided by the C++ Standard Library. For example, instead of using `strcpy`, use `std::string`. Instead of `sprintf`, use `std::ostringstream`. \n\nIf you must use a potentially unsafe function, make sure to validate and sanitize all inputs to the function. Never trust user input without validation.\n\n## Source Code Fix Recommendation\n\nWithout more context, it's hard to provide a specific fix. However, if `outputToCsv` is a function that writes to a file, a safer alternative might be to use the C++ file I/O functions:\n\n```cpp\n#include <fstream>\n\n// ...\n\nstd::ofstream file(\"output.csv\");\nif (file.is_open()) {\n    file << ev;\n    file.close();\n} else {\n    // Handle error\n}\n```\n\n## Library Dependencies\n\nWithout more context, it's hard to say what library dependencies are required. However, if the `outputToCsv` function is part of a library, that library would be a dependency. The C++ Standard Library is also a likely dependency.\n\n## OWASP and CWE Links\n\n- [CWE-676: Use of Potentially Dangerous Function](https://cwe.mitre.org/data/definitions/676.html)\n\nPlease note that these links are subject to change and may not be accessible to all users."
+              },
+              "properties": {
+                "tags": [
+                  "DS154189"
+                ]
+              }
+            },
+            {
+              "id": "5087f8bb-d69f-32fd-a25c-45b0084cdce0",
+              "help": {
+                "text": "",
+                "markdown": "## Description\n\n\"Prohibited C Function Found\" is a vulnerability that occurs when a C++ program uses a function that is considered unsafe due to its potential to cause buffer overflows, memory corruption, or other security issues. These functions are often part of the C Standard Library and are included for backwards compatibility, but their use is discouraged in modern programming.\n\nIn the provided code snippet, the vulnerability sink is `ev.outputToCsv`. Without more context, it's hard to say exactly what the issue is, but if `outputToCsv` is a function that writes to a file or sends data over a network, it could potentially be used to execute a buffer overflow attack or other form of exploitation.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, avoid using unsafe C functions in your C++ code. Instead, use safer alternatives provided by the C++ Standard Library. For example, instead of using `strcpy`, use `std::string`. Instead of `sprintf`, use `std::ostringstream`. \n\nIf you must use a potentially unsafe function, make sure to validate and sanitize all inputs to the function. Never trust user input without validation.\n\n## Source Code Fix Recommendation\n\nWithout more context, it's hard to provide a specific fix. However, if `outputToCsv` is a function that writes to a file, a safer alternative might be to use the C++ file I/O functions:\n\n```cpp\n#include <fstream>\n\n// ...\n\nstd::ofstream file(\"output.csv\");\nif (file.is_open()) {\n    file << ev;\n    file.close();\n} else {\n    // Handle error\n}\n```\n\n## Library Dependencies\n\nWithout more context, it's hard to say what library dependencies are required. However, if the `outputToCsv` function is part of a library, that library would be a dependency. The C++ Standard Library is also a likely dependency.\n\n## OWASP and CWE Links\n\n- [CWE-676: Use of Potentially Dangerous Function](https://cwe.mitre.org/data/definitions/676.html)\n\nPlease note that these links are subject to change and may not be accessible to all users."
+              },
+              "properties": {
+                "tags": [
+                  "DS154189"
+                ]
+              }
+            },
+            {
+              "id": "d5a3c66b-63f2-3c43-8fcb-97aa3cf46c76",
+              "help": {
+                "text": "",
+                "markdown": "## Description\n\n\"Prohibited C Function Found\" is a vulnerability that occurs when a C++ program uses a function that is considered unsafe due to its potential to cause buffer overflows, memory corruption, or other security issues. These functions are often part of the C Standard Library and are included for backwards compatibility, but their use is discouraged in modern programming.\n\nIn the provided code snippet, the vulnerability sink is `ev.outputToCsv`. Without more context, it's hard to say exactly what the issue is, but if `outputToCsv` is a function that writes to a file or sends data over a network, it could potentially be used to execute a buffer overflow attack or other form of exploitation.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, avoid using unsafe C functions in your C++ code. Instead, use safer alternatives provided by the C++ Standard Library. For example, instead of using `strcpy`, use `std::string`. Instead of `sprintf`, use `std::ostringstream`. \n\nIf you must use a potentially unsafe function, make sure to validate and sanitize all inputs to the function. Never trust user input without validation.\n\n## Source Code Fix Recommendation\n\nWithout more context, it's hard to provide a specific fix. However, if `outputToCsv` is a function that writes to a file, a safer alternative might be to use the C++ file I/O functions:\n\n```cpp\n#include <fstream>\n\n// ...\n\nstd::ofstream file(\"output.csv\");\nif (file.is_open()) {\n    file << ev;\n    file.close();\n} else {\n    // Handle error\n}\n```\n\n## Library Dependencies\n\nWithout more context, it's hard to say what library dependencies are required. However, if the `outputToCsv` function is part of a library, that library would be a dependency. The C++ Standard Library is also a likely dependency.\n\n## OWASP and CWE Links\n\n- [CWE-676: Use of Potentially Dangerous Function](https://cwe.mitre.org/data/definitions/676.html)\n\nPlease note that these links are subject to change and may not be accessible to all users."
+              },
+              "properties": {
+                "tags": [
+                  "DS154189"
+                ]
+              }
+            },
+            {
+              "id": "1394ea3e-ae82-33a4-904d-e5fa07ad0c09",
+              "help": {
+                "text": "",
+                "markdown": "## Description\n\n\"Prohibited C Function Found\" is a vulnerability that occurs when a C++ program uses a function that is considered unsafe due to its potential to cause buffer overflows, memory corruption, or other security issues. These functions are often part of the C Standard Library and are included for backwards compatibility, but their use is discouraged in modern programming.\n\nIn the provided code snippet, the vulnerability sink is `ev.outputToCsv`. Without more context, it's hard to say exactly what the issue is, but if `outputToCsv` is a function that writes to a file or sends data over a network, it could potentially be used to execute a buffer overflow attack or other form of exploitation.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, avoid using unsafe C functions in your C++ code. Instead, use safer alternatives provided by the C++ Standard Library. For example, instead of using `strcpy`, use `std::string`. Instead of `sprintf`, use `std::ostringstream`. \n\nIf you must use a potentially unsafe function, make sure to validate and sanitize all inputs to the function. Never trust user input without validation.\n\n## Source Code Fix Recommendation\n\nWithout more context, it's hard to provide a specific fix. However, if `outputToCsv` is a function that writes to a file, a safer alternative might be to use the C++ file I/O functions:\n\n```cpp\n#include <fstream>\n\n// ...\n\nstd::ofstream file(\"output.csv\");\nif (file.is_open()) {\n    file << ev;\n    file.close();\n} else {\n    // Handle error\n}\n```\n\n## Library Dependencies\n\nWithout more context, it's hard to say what library dependencies are required. However, if the `outputToCsv` function is part of a library, that library would be a dependency. The C++ Standard Library is also a likely dependency.\n\n## OWASP and CWE Links\n\n- [CWE-676: Use of Potentially Dangerous Function](https://cwe.mitre.org/data/definitions/676.html)\n\nPlease note that these links are subject to change and may not be accessible to all users."
+              },
+              "properties": {
+                "tags": [
+                  "DS154189"
+                ]
+              }
+            },
+            {
+              "id": "a03999f9-1332-33ea-9f78-f0ad9f010e01",
+              "help": {
+                "text": "",
+                "markdown": "## Description\n\n\"Detected Prohibited C Function\" vulnerability in C++ refers to the use of certain C standard library functions that are known to be dangerous due to their potential to cause buffer overflows, format string vulnerabilities, or other problems. These functions are often prohibited in secure coding standards. The vulnerability arises when a programmer uses these functions without proper validation or sanitization of inputs, leading to potential security risks.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, it is recommended to avoid using prohibited C functions. Instead, use safer alternatives provided by the C++ Standard Library. Always validate and sanitize inputs before processing. Be aware of the potential risks of buffer overflow and format string vulnerabilities.\n\n## Source Code Fix Recommendation\n\nAssuming the `!outputToCsv` function is a prohibited C function, a safer alternative could be using C++ file streams. Here is an example:\n\n```cpp\n#include <fstream>\n#include <vector>\n\nvoid outputToCsv(const std::vector<std::string>& data, const std::string& filename) {\n    std::ofstream file(filename);\n\n    for (const auto& line : data) {\n        file << line << '\\n';\n    }\n}\n```\n\n## Library Dependencies\n\nThe code example requires the following library dependencies:\n\n- `<fstream>`: for file I/O operations\n- `<vector>`: for storing data\n- `<string>`: for string operations\n\n## OWASP Resources\n\n- [OWASP Secure Coding Practices](https://owasp.org/www-project-secure-coding-practices-quick-reference-guide/)\n\n## Common Weakness Enumeration (CWE)\n\n- [CWE-676: Use of Potentially Dangerous Function](https://cwe.mitre.org/data/definitions/676.html)"
+              },
+              "properties": {
+                "tags": [
+                  "DS154189"
+                ]
+              }
+            },
+            {
+              "id": "e96fd9a7-c909-3626-90f3-c65814254fc1",
+              "help": {
+                "text": "",
+                "markdown": "## Description\n\n\"Detected Prohibited C Function\" vulnerability in C++ refers to the use of certain C standard library functions that are known to be dangerous due to their potential to cause buffer overflows, format string vulnerabilities, or other problems. These functions are often prohibited in secure coding standards. In the provided code snippet, the function `outputToCsv` is flagged as potentially dangerous.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, it is recommended to avoid using prohibited C functions. Instead, use safer alternatives provided by the C++ Standard Library or other trusted libraries. Always validate and sanitize input data before processing it. Also, consider using automated tools to detect and prevent the use of prohibited functions.\n\n## Source Code Fix Recommendation\n\nWithout the full context of the code, it's hard to provide a specific fix. However, if `outputToCsv` is a custom function that uses prohibited C functions internally, you should revise its implementation to avoid them. If it's a prohibited function itself, you should replace it with a safer alternative.\n\n## Library Dependencies\n\nThe specific library dependencies required by the code example cannot be determined from the provided snippet. However, if `outputToCsv` is a function from a specific library, that library would be a dependency.\n\n## References\n\n- [OWASP Proactive Controls](https://owasp.org/www-project-proactive-controls/)\n- [CWE-676: Use of Potentially Dangerous Function](https://cwe.mitre.org/data/definitions/676.html)\n\nPlease note that the links provided are active and accessible for anonymous users at the time of writing this report."
+              },
+              "properties": {
+                "tags": [
+                  "DS154189"
+                ]
+              }
+            },
+            {
+              "id": "368c71cc-9fab-3ddb-9b8b-93bbb6886566",
+              "help": {
+                "text": "",
+                "markdown": "## Description\n\n\"Prohibited C Function Identified\" vulnerability refers to the use of certain C functions that are considered unsafe due to their potential to cause buffer overflows, format string vulnerabilities, or other types of security issues. These functions are often prohibited in secure coding standards and their use can lead to serious security vulnerabilities.\n\nIn the context of the provided code snippet `numCpuDevices > 0`, it's hard to identify a specific prohibited C function vulnerability as the snippet is too short and doesn't contain any function calls. However, it's important to note that any function that manipulates memory or handles strings can potentially be a source of vulnerability if not used correctly.\n\n## Mitigation Advice\n\nTo mitigate this type of vulnerability, avoid using unsafe C functions. Instead, use safer alternatives that perform bounds checking or other forms of validation. Always validate and sanitize input data. Be aware of integer overflow and underflow issues. \n\n## Source Code Fix Recommendation\n\nWithout the full context of the code, it's hard to provide a specific fix. However, if `numCpuDevices` is a result of a function that could potentially be unsafe, replace it with a safer alternative.\n\n## Library Dependencies\n\nThe code snippet provided does not indicate any specific library dependencies.\n\n## OWASP and CWE Links\n\n- [OWASP C++ Secure Coding Practices](https://cheatsheetseries.owasp.org/cheatsheets/C-Based_Toolchain_Hardening_Cheat_Sheet.html)\n- [CWE-676: Use of Potentially Dangerous Function](https://cwe.mitre.org/data/definitions/676.html)\n\nPlease note that these links are active and accessible for anonymous users at the time of writing this report."
+              },
+              "properties": {
+                "tags": [
+                  "DS154189"
+                ]
+              }
+            },
+            {
+              "id": "e1170c4d-b90d-37d8-9693-552bb4b0d531",
+              "help": {
+                "text": "",
+                "markdown": "## Description\n\n\"Detected Prohibited C Function\" vulnerability in C++ refers to the use of insecure or unsafe C library functions in the code. These functions are often prone to buffer overflow attacks, format string vulnerabilities, integer overflow, etc. The use of these functions can lead to serious security issues such as code execution, denial of service, or information disclosure.\n\nIn the provided code snippet, there is no direct use of prohibited C functions. However, the comparison operation could potentially lead to logical errors or unexpected behavior if not properly handled.\n\n## Mitigation Advice\n\nTo mitigate this type of vulnerability, it is recommended to:\n\n- Avoid using unsafe C library functions. Instead, use safer alternatives provided by the C++ Standard Library.\n- Always validate and sanitize input data.\n- Use secure coding practices and follow the principle of least privilege.\n- Regularly update and patch your software to fix any known vulnerabilities.\n\n## Source Code Fix Recommendation\n\nThe provided code snippet is a comparison operation and does not directly involve any prohibited C functions. However, to ensure the comparison operation is safe and correct, you can add additional checks or use safer comparison methods. Here is a possible fix:\n\n```cpp\nif (src > 0 && src == numCpuDevices) {\n    // Your code here\n}\n```\n\nIn this fix, we ensure that `src` is greater than zero before comparing it with `numCpuDevices`. This can prevent potential issues if `src` is negative.\n\n## Library Dependencies\n\nThe provided code snippet does not require any specific library dependencies to execute properly.\n\n## OWASP and CWE Links\n\n- [OWASP C++ Secure Coding Practices](https://cheatsheetseries.owasp.org/cheatsheets/C-Based_Toolchain_Hardening_Cheat_Sheet.html)\n- [CWE-676: Use of Potentially Dangerous Function](https://cwe.mitre.org/data/definitions/676.html)\n\nPlease note that these links are active and accessible to anonymous users at the time of writing this report."
+              },
+              "properties": {
+                "tags": [
+                  "DS154189"
+                ]
+              }
+            },
+            {
+              "id": "76afd127-0f62-3ebb-8e0e-6c5208f02052",
+              "help": {
+                "text": "",
+                "markdown": "## Description\n\n\"Prohibited C Function Found\" is a vulnerability that occurs when a C++ program uses a function that is considered unsafe due to its potential to cause buffer overflows, memory corruption, or other security issues. These functions are often part of the C Standard Library and are included for backwards compatibility, but their use is discouraged in modern programming.\n\nIn the provided code snippet, the vulnerability sink is `ev.outputToCsv`. Without more context, it's hard to say exactly what the issue is, but if `outputToCsv` is a function that writes to a file or sends data over a network, it could potentially be used to execute a buffer overflow attack or other form of exploitation.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, avoid using unsafe C functions in your C++ code. Instead, use safer alternatives provided by the C++ Standard Library. For example, instead of using `strcpy`, use `std::string`. Instead of `sprintf`, use `std::ostringstream`. \n\nIf you must use a potentially unsafe function, make sure to validate and sanitize all inputs to the function. Never trust user input without validation.\n\n## Source Code Fix Recommendation\n\nWithout more context, it's hard to provide a specific fix. However, if `outputToCsv` is a function that writes to a file, a safer alternative might be to use the C++ file I/O functions:\n\n```cpp\n#include <fstream>\n\n// ...\n\nstd::ofstream file(\"output.csv\");\nif (file.is_open()) {\n    file << ev;\n    file.close();\n} else {\n    // Handle error\n}\n```\n\n## Library Dependencies\n\nWithout more context, it's hard to say what library dependencies are required. However, if the `outputToCsv` function is part of a library, that library would be a dependency. The C++ Standard Library is also a likely dependency.\n\n## OWASP and CWE Links\n\n- [CWE-676: Use of Potentially Dangerous Function](https://cwe.mitre.org/data/definitions/676.html)\n\nPlease note that these links are subject to change and may not be accessible to all users."
+              },
+              "properties": {
+                "tags": [
+                  "DS154189"
+                ]
+              }
+            },
+            {
+              "id": "829c3176-fa4a-3786-a88f-bb2c48f19f17",
+              "help": {
+                "text": "",
+                "markdown": "## Description\n\nThe vulnerability in this code snippet is related to the `strlen` function in C++. The `strlen` function returns the length of a string, excluding the null-terminating character. If the string is empty, `strlen` will return 0. In the code snippet, `strlen(argv[2])-1` is used as an index to access an element in the string. If `argv[2]` is an empty string, `strlen(argv[2])-1` will be -1, which is an invalid index and will lead to undefined behavior, potentially causing a buffer underflow.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, you should always check the length of a string before using it as an index. If the string is empty, you should handle this case separately to avoid accessing an invalid index.\n\n## Source Code Fix Recommendation\n\nHere is a fixed version of the code snippet:\n\n```cpp\nif (strlen(argv[2]) > 0) {\n    units = argv[2][strlen(argv[2])-1];\n} else {\n    // Handle the case where argv[2] is an empty string\n}\n```\n\nIn this fixed version, we first check if `argv[2]` is an empty string by checking if `strlen(argv[2])` is greater than 0. If it is, we can safely use `strlen(argv[2])-1` as an index. If it is not, we handle the case where `argv[2]` is an empty string separately.\n\n## Library Dependencies\n\nThe code snippet requires the following library to execute properly:\n\n- cstring\n\n## References\n\n- [OWASP Buffer Underflow](https://owasp.org/www-community/vulnerabilities/Buffer_Overflow)\n- [CWE-129: Improper Validation of Array Index](https://cwe.mitre.org/data/definitions/129.html)"
               },
               "properties": {
                 "tags": [
@@ -72,74 +312,98 @@
               }
             },
             {
-              "id": "glog-5b80e359-a67c-41a3-b8d7-055cb990fdaf",
+              "id": "7d2149e6-ed45-3c99-b59c-c99f299b602a",
               "help": {
                 "text": "",
-                "markdown": "## Description\n\nThe `strlen` function in C++ is used to find the length of a string. However, it can lead to vulnerabilities if not used properly. The function counts the number of characters in a string until it reaches a null character (`\\0`). If the string is not properly null-terminated, `strlen` will continue reading memory until it encounters a null character, potentially leading to buffer overflows, memory corruption, and other undefined behavior.\n\nIn the provided code snippet, `strlen(\"RoCE v1\")`, there is no direct vulnerability as the string is a string literal which is automatically null-terminated by the compiler. However, if the string was user input or came from an untrusted source, it could potentially be a source of vulnerability.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, always ensure that strings are properly null-terminated before passing them to `strlen`. Avoid using `strlen` on strings from untrusted sources. If you must use `strlen` on such strings, ensure that they are properly sanitized and null-terminated.\n\n## Source Code Fix Recommendation\n\nIn the provided code snippet, there is no direct vulnerability. However, if the string was user input or came from an untrusted source, it could be fixed as follows:\n\n```cpp\n#include <cstring>\n\nchar user_input[100];\n// ... (code to get user input)\nuser_input[sizeof(user_input) - 1] = '\\0';\nsize_t length = strlen(user_input);\n```\n\nIn this code, we ensure that the string is null-terminated before passing it to `strlen`.\n\n## Library Dependencies\n\nThe `strlen` function is part of the C standard library, so the only library dependency required by the code example is:\n\n```cpp\n#include <cstring>\n```\n\n## References\n\n- [OWASP C++ Secure Coding Practices](https://cheatsheetseries.owasp.org/cheatsheets/C-Based_Toolchain_Hardening_Cheat_Sheet.html)\n- [CWE-126: Buffer Over-read](https://cwe.mitre.org/data/definitions/126.html)\n\nPlease note that the links provided are accessible to anonymous users at the time of writing this report."
+                "markdown": "## Description\n\n\"Detected Prohibited C Function\" vulnerability in C++ refers to the use of certain C standard library functions that are known to be dangerous due to their potential to cause buffer overflows, format string vulnerabilities, or other problems. These functions are often prohibited in secure coding standards. The use of such functions can lead to serious security vulnerabilities including arbitrary code execution, memory corruption, and denial-of-service attacks.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, it is recommended to avoid using dangerous C functions and instead use safer alternatives provided by the C++ standard library. These alternatives often include bounds checking or other mechanisms to prevent common vulnerabilities.\n\n## Source Code Fix Recommendation\n\nFor the specific vulnerability sink `!showMinOnly`, it's hard to provide a specific fix without the context of the code. However, if `showMinOnly` is a function that uses prohibited C functions, you should replace these with safer alternatives. For example, if `showMinOnly` uses `strcpy`, you could replace it with `strncpy` or even better, use C++ strings and their methods.\n\n## Library Dependencies\n\nWithout the specific code, it's hard to list the exact library dependencies. However, in general, C++ programs might require the following libraries:\n\n- iostream\n- string\n- vector\n- map\n- etc.\n\n## OWASP and CWE Links\n\n- [CWE-676: Use of Potentially Dangerous Function](https://cwe.mitre.org/data/definitions/676.html)\n\nPlease note that the links provided are active and accessible for anonymous users at the time of writing this report."
               },
               "properties": {
                 "tags": [
-                  "DS140021"
+                  "DS154189"
                 ]
               }
             },
             {
-              "id": "glog-05cdbd82-0479-4e32-866f-bf3645f37866",
+              "id": "24dcb43d-e1b1-3582-90e1-fc66bfc83263",
               "help": {
                 "text": "",
-                "markdown": "## Description\n\nThe `strlen` function in C and C++ is used to find the length of a string. However, it can lead to vulnerabilities if not used properly. The function counts the number of characters in a string until it reaches a null character (`\\0`). If the string is not properly null-terminated, `strlen` will continue reading memory beyond the intended boundary, leading to a buffer overflow vulnerability. This can lead to crashes, incorrect behavior, or even code execution if an attacker can control the overflow.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, always ensure that your strings are properly null-terminated. Avoid using `strlen` on strings that may not be null-terminated. If you are dealing with strings that may not be null-terminated, consider using functions that take a length parameter, such as `strnlen`, which will not read beyond a specified length.\n\n## Source Code Fix Recommendation\n\nIn the specific case of `strlen(\"IB/RoCE v1\")`, the string is a string literal and is automatically null-terminated, so there is no vulnerability. However, if the string were not a literal and its null-termination were not guaranteed, you could use `strnlen` instead:\n\n```cpp\nconst char* str = /* some string that may not be null-terminated */;\nsize_t len = strnlen(str, MAX_LENGTH);\n```\n\nHere, `MAX_LENGTH` is the maximum length you expect `str` to be. `strnlen` will not read beyond this length, preventing a buffer overflow.\n\n## Library Dependencies\n\nThe `strlen` function is part of the C standard library, so no additional library dependencies are required.\n\n## References\n\n- [OWASP Buffer Overflow](https://owasp.org/www-community/vulnerabilities/Buffer_Overflow)\n- [CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow')](https://cwe.mitre.org/data/definitions/120.html)"
+                "markdown": "## Description\n\n\"Detected Prohibited C Function\" vulnerability in C++ refers to the use of certain C standard library functions that are known to be dangerous due to their potential to cause buffer overflows, format string vulnerabilities, or other issues. These functions are often prohibited in secure coding standards. The use of these functions can lead to serious security vulnerabilities including code execution, denial of service, or information disclosure.\n\nIn the provided code snippet, there is no explicit use of a prohibited C function. However, if the `line` variable is manipulated using prohibited C functions elsewhere in the code, it could potentially lead to vulnerabilities.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, avoid using prohibited C functions. Instead, use safer alternatives provided by the C++ standard library. For example, use `fgets` or `getline` instead of `gets`, `strncpy` instead of `strcpy`, `snprintf` instead of `sprintf`, etc.\n\n## Source Code Fix Recommendation\n\nWithout the full context of the code, it's hard to provide a specific fix. However, if `line` is being manipulated using prohibited C functions elsewhere in the code, replace those functions with their safer alternatives.\n\nFor example, if `line` is being read from an input stream using `gets`, replace it with `fgets` or `getline`:\n\n```cpp\nchar line[256];\nif (fgets(line, sizeof(line), stdin)) {\n    // process line\n}\n```\n\n## Library Dependencies\n\nThe code snippet provided does not appear to require any specific library dependencies. However, the full code may require the C++ standard library or other libraries depending on how `ev`, `outputToCsv`, and `line` are defined and used.\n\n## References\n\n- [CWE-676: Use of Potentially Dangerous Function](https://cwe.mitre.org/data/definitions/676.html)\n\nPlease note that the links provided are active and accessible to anonymous users at the time of writing."
               },
               "properties": {
                 "tags": [
-                  "DS140021"
+                  "DS154189"
                 ]
               }
             },
             {
-              "id": "glog-a1afe8da-beb6-4c49-a009-e6c6c8fa6a9a",
+              "id": "b612c71e-83dd-3157-8176-08bafdd8b767",
               "help": {
                 "text": "",
-                "markdown": "## Description\n\nThe `strlen()` function in C and C++ is used to find the length of a string. However, it can lead to vulnerabilities if not used properly. The function counts the number of characters in a string until it reaches a null character (`'\\0'`). If the string is not null-terminated, `strlen()` will continue reading memory until it encounters a null character, which can lead to buffer overflows, memory corruption, and other undefined behavior.\n\nIn the provided code snippet, `strlen(gidRoceVerStr)`, there is a potential vulnerability if `gidRoceVerStr` is not a null-terminated string.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, always ensure that strings are null-terminated before passing them to `strlen()`. Additionally, consider using safer alternatives to `strlen()`, such as `strnlen()`, which takes a maximum length parameter and will not read past this length, even if it does not encounter a null character.\n\n## Source Code Fix Recommendation\n\nIf `gidRoceVerStr` is a character array, ensure it is null-terminated:\n\n```cpp\nchar gidRoceVerStr[MAX_LENGTH] = {0}; // initialize all elements to '\\0'\n// populate gidRoceVerStr\nsize_t length = strlen(gidRoceVerStr);\n```\n\nIf `gidRoceVerStr` is a pointer, consider using `strnlen()`:\n\n```cpp\nchar* gidRoceVerStr;\n// allocate and populate gidRoceVerStr\nsize_t length = strnlen(gidRoceVerStr, MAX_LENGTH);\n```\n\nIn both cases, replace `MAX_LENGTH` with the maximum expected length of `gidRoceVerStr`.\n\n## Library Dependencies\n\nThe `strlen()` function is part of the C standard library, so the code requires the `<cstring>` (or `<string.h>` in C) header file.\n\n## References\n\n- [OWASP C/C++ Vulnerabilities](https://owasp.org/www-pdf-archive/OWASP_SCP_Quick_Reference_Guide_v2.pdf)\n- [CWE-126: Buffer Over-read](https://cwe.mitre.org/data/definitions/126.html)"
+                "markdown": "## Description\n\n\"Detected Prohibited C Function\" vulnerability in C++ refers to the use of certain C standard library functions that are known to be dangerous due to their potential to cause buffer overflows, format string vulnerabilities, or other problems. These functions are often prohibited in secure coding standards. In the provided code snippet, the function `outputToCsv` is flagged as potentially dangerous.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, it is recommended to avoid using prohibited C functions. Instead, use safer alternatives provided by the C++ Standard Library or other trusted libraries. Always validate and sanitize input data before processing it. Also, consider using automated tools to detect and prevent the use of prohibited functions.\n\n## Source Code Fix Recommendation\n\nWithout the full context of the code, it's hard to provide a specific fix. However, if `outputToCsv` is a custom function that uses prohibited C functions internally, you should revise its implementation to avoid them. If it's a prohibited function itself, you should replace it with a safer alternative.\n\n## Library Dependencies\n\nThe specific library dependencies required by the code example cannot be determined from the provided snippet. However, if `outputToCsv` is a function from a specific library, that library would be a dependency.\n\n## References\n\n- [OWASP Proactive Controls](https://owasp.org/www-project-proactive-controls/)\n- [CWE-676: Use of Potentially Dangerous Function](https://cwe.mitre.org/data/definitions/676.html)\n\nPlease note that the links provided are active and accessible for anonymous users at the time of writing this report."
               },
               "properties": {
                 "tags": [
-                  "DS140021"
+                  "DS154189"
                 ]
               }
             },
             {
-              "id": "glog-42a26b4a-7818-4388-a172-bea2cbf909f9",
+              "id": "6d6352a1-7e94-3012-a96c-2502af42fc59",
               "help": {
                 "text": "",
-                "markdown": "## Description\n\nThe `strlen(argv[2])` function in C++ is used to calculate the length of a string. The vulnerability arises when the function is used on a string that is not null-terminated. This can lead to buffer overflows, memory corruption, and other unexpected behavior, as the function will continue reading memory until it encounters a null character.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, always ensure that the string passed to `strlen()` is null-terminated. This can be done by initializing your strings with a null character at the end, or by manually adding a null character at the end of the string before passing it to `strlen()`.\n\n## Source Code Fix Recommendation\n\nInstead of using `strlen(argv[2])`, consider using `strnlen(argv[2], MAX_LEN)`, where `MAX_LEN` is the maximum expected length of the string. This function will stop reading memory after `MAX_LEN` characters, preventing potential buffer overflows and memory corruption.\n\n```cpp\n#include <string.h>\n\n#define MAX_LEN 100\n\nint main(int argc, char *argv[]) {\n    size_t len = strnlen(argv[2], MAX_LEN);\n    // ...\n}\n```\n\n## Library Dependencies\n\nThe `strlen()` and `strnlen()` functions are part of the `<string.h>` library in C++. No additional libraries are needed for these functions.\n\n## References\n\n- [OWASP C++ Secure Coding Practices](https://cheatsheetseries.owasp.org/cheatsheets/C-Based_Toolchain_Hardening_Cheat_Sheet.html)\n- [CWE-126: Buffer Over-read](https://cwe.mitre.org/data/definitions/126.html)"
+                "markdown": "## Description\n\n\"Detected Prohibited C Function\" vulnerability in C++ refers to the use of certain C standard library functions that are known to be dangerous due to their potential to cause buffer overflows, format string vulnerabilities, or other problems. These functions are often prohibited in secure coding standards. In the provided code snippet, the function `outputToCsv` is flagged as potentially dangerous.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, it is recommended to avoid using prohibited C functions. Instead, use safer alternatives provided by the C++ Standard Library or other trusted libraries. Always validate and sanitize input data before processing it. Also, consider using automated tools to detect and prevent the use of prohibited functions.\n\n## Source Code Fix Recommendation\n\nWithout the full context of the code, it's hard to provide a specific fix. However, if `outputToCsv` is a custom function that uses prohibited C functions internally, you should revise its implementation to avoid them. If it's a prohibited function itself, you should replace it with a safer alternative.\n\n## Library Dependencies\n\nThe specific library dependencies required by the code example cannot be determined from the provided snippet. However, if `outputToCsv` is a function from a specific library, that library would be a dependency.\n\n## References\n\n- [OWASP Proactive Controls](https://owasp.org/www-project-proactive-controls/)\n- [CWE-676: Use of Potentially Dangerous Function](https://cwe.mitre.org/data/definitions/676.html)\n\nPlease note that the links provided are active and accessible for anonymous users at the time of writing this report."
               },
               "properties": {
                 "tags": [
-                  "DS140021"
+                  "DS154189"
                 ]
               }
             },
             {
-              "id": "glog-03d57739-e18d-4a44-b4f0-fa17e258ae49",
+              "id": "c93f820b-feae-3eb1-82f3-bf51abf06d7e",
               "help": {
                 "text": "",
-                "markdown": "## Description\n\nThe `strlen()` function in C++ is used to find the length of a string. However, it can lead to vulnerabilities if not used properly. The function counts the number of characters in a string up to, but not including, the terminating null character. If the string does not have a null character, `strlen()` will continue reading memory until it encounters one, which can lead to buffer overflows, memory corruption, and other unexpected behavior.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, always ensure that your strings are null-terminated. This can be done by initializing your strings with a null character or by manually adding one at the end of your string. Additionally, consider using safer alternatives to `strlen()`, such as `strnlen()`, which takes an additional parameter specifying the maximum length of the string.\n\n## Source Code Fix Recommendation\n\nInstead of:\n\n```cpp\n#include <cstring>\n\nchar pattern[] = \"example\";\nint length = strlen(pattern);\n```\n\nUse:\n\n```cpp\n#include <cstring>\n\nchar pattern[] = \"example\";\nint length = strnlen(pattern, sizeof(pattern));\n```\n\nIn the fixed code, `strnlen()` is used instead of `strlen()`. The second parameter to `strnlen()` is the maximum number of characters to read. If `pattern` is not null-terminated, `strnlen()` will stop reading after `sizeof(pattern)` characters, preventing a buffer overflow.\n\n## Library Dependencies\n\nThe code example requires the `<cstring>` library.\n\n## References\n\n- [OWASP C++ Secure Coding Practices](https://cheatsheetseries.owasp.org/cheatsheets/C-Based_Toolchain_Hardening_Cheat_Sheet.html)\n- [Common Weakness Enumeration (CWE-126)](https://cwe.mitre.org/data/definitions/126.html)"
+                "markdown": "## Description\n\n\"Detected Prohibited C Function\" vulnerability in C++ refers to the use of insecure C library functions that can lead to various security issues such as buffer overflows, format string vulnerabilities, integer overflows, etc. In this case, the `vsnprintf` function is used, which can lead to buffer overflow if not used correctly.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, it is recommended to use safer alternatives to these functions. In C++, the Standard Template Library (STL) provides many safe alternatives. For example, instead of using `vsnprintf`, you can use `std::string` and `std::stringstream` for string formatting and manipulation.\n\n## Source Code Fix Recommendation\n\nHere is a safer alternative using `std::stringstream`:\n\n```cpp\n#include <sstream>\n#include <stdarg.h>\n\nvoid safeFunction(const char* format, ...) {\n    va_list args;\n    va_start(args, format);\n    std::stringstream ss;\n    while (*format != '\\0') {\n        if (*format == '%') {\n            format++;\n            if (*format == 'd') {\n                int i = va_arg(args, int);\n                ss << i;\n            }\n            else if (*format == 'c') {\n                // note automatic conversion to integral type\n                int c = va_arg(args, int);\n                ss << static_cast<char>(c);\n            }\n            else if (*format == 'f') {\n                double d = va_arg(args, double);\n                ss << d;\n            }\n            // add more specifiers as needed\n        }\n        else {\n            ss << *format;\n        }\n        format++;\n    }\n    va_end(args);\n    this->errMsg = ss.str();\n}\n```\n\n## Library Dependencies\n\nThe code example requires the following libraries:\n\n- `<sstream>`: for `std::stringstream`\n- `<stdarg.h>`: for `va_list`, `va_start`, and `va_arg`\n\n## References\n\n- [OWASP C++ Secure Coding Practices](https://cheatsheetseries.owasp.org/cheatsheets/C-Based_Toolchain_Hardening_Cheat_Sheet.html)\n- [CWE-676: Use of Potentially Dangerous Function](https://cwe.mitre.org/data/definitions/676.html)"
               },
               "properties": {
                 "tags": [
-                  "DS140021"
+                  "DS154189"
                 ]
               }
             },
             {
-              "id": "glog-9f642a9d-bf00-4304-b96b-780f656fd116",
+              "id": "ab5773bf-faf0-34f1-979f-3df38b085179",
               "help": {
                 "text": "",
-                "markdown": "### Description\n\nIn C++ programming, using weak or non-cryptographic random number generators can lead to vulnerabilities, especially in security-sensitive applications. Functions like `rand()` from the C standard library are not suitable for cryptographic purposes because they produce predictable sequences of numbers. This predictability can be exploited by attackers to compromise the security of the application.\n\n### General Mitigation Advice\n\nTo mitigate this vulnerability, use a cryptographically secure random number generator. In C++, the `<random>` library provides better alternatives, but for cryptographic purposes, consider using libraries like OpenSSL or libsodium that offer cryptographically secure random number generation.\n\n### Source Code Fix Recommendation\n\n#### Vulnerable Code\n\n```cpp\n#include <algorithm>\n#include <vector>\n#include <cstdlib> // For rand()\n\nvoid shuffleVector(std::vector<int>& vec) {\n    std::random_shuffle(vec.begin(), vec.end());\n}\n```\n\n#### Fixed Code\n\n```cpp\n#include <algorithm>\n#include <vector>\n#include <random> // For std::random_device and std::mt19937\n\nvoid shuffleVector(std::vector<int>& vec) {\n    std::random_device rd;\n    std::mt19937 g(rd());\n    std::shuffle(vec.begin(), vec.end(), g);\n}\n```\n\n### Library Dependencies\n\n- `<algorithm>`: Required for `std::shuffle`.\n- `<vector>`: Required for using `std::vector`.\n- `<random>`: Required for `std::random_device` and `std::mt19937`.\n\n### OWASP Resources\n\n- [OWASP Cryptographic Storage Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Cryptographic_Storage_Cheat_Sheet.html)\n\n### Common Weakness Enumeration (CWE)\n\n- [CWE-338: Use of Cryptographically Weak Pseudo-Random Number Generator (PRNG)](https://cwe.mitre.org/data/definitions/338.html)"
+                "markdown": "## Description\n\nThe \"Prohibited C Function Found\" vulnerability in C++ refers to the use of certain C library functions that are considered unsafe due to their potential to cause buffer overflows, format string vulnerabilities, or other types of security issues. These functions are often prohibited in secure coding standards due to their inherent risks.\n\nIn the provided code snippet, the function `atoll()` is used, which converts a string to a long long integer. This function does not perform any error checking, and if the input string is not a valid number, it can lead to undefined behavior.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, it is recommended to use safer alternatives that perform error checking. In C++, this can be achieved by using the `std::stoll()` function from the `<string>` library, which throws an exception if the conversion cannot be performed.\n\n## Source Code Fix Recommendation\n\nHere is a fixed version of the code:\n\n```cpp\n#include <string>\n#include <cstdlib>\n\ntry {\n    numBytesPerTransfer = argc > 2 ? std::stoll(argv[2]) : DEFAULT_BYTES_PER_TRANSFER;\n} catch (const std::invalid_argument& ia) {\n    // Handle the exception\n}\n```\n\n## Library Dependencies\n\nThe code example requires the following library dependencies:\n\n- `<cstdlib>`: For the `std::atoll()` function.\n- `<string>`: For the `std::stoll()` function.\n\n## OWASP and CWE Links\n\n- [OWASP C++ Secure Coding Practices](https://cheatsheetseries.owasp.org/cheatsheets/C-Based_Toolchain_Hardening_Cheat_Sheet.html)\n- [CWE-242: Use of Inherently Dangerous Function](https://cwe.mitre.org/data/definitions/242.html)\n\nPlease note that these links are subject to change and may not always be accessible."
               },
               "properties": {
                 "tags": [
-                  "DS148264"
+                  "DS154189"
+                ]
+              }
+            },
+            {
+              "id": "83147a10-ded2-35d3-ad25-df6f3744332c",
+              "help": {
+                "text": "",
+                "markdown": "## Description\n\n\"Detected Prohibited C Function\" vulnerability in C++ refers to the use of certain C standard library functions that are known to be dangerous due to their potential to cause buffer overflows, format string vulnerabilities, or other problems. These functions are often prohibited in secure coding standards. The use of such functions can lead to serious security vulnerabilities including arbitrary code execution, memory corruption, and denial-of-service attacks.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, it is recommended to avoid using dangerous C functions and instead use safer alternatives provided by the C++ standard library. These alternatives often include bounds checking or other mechanisms to prevent common vulnerabilities.\n\n## Source Code Fix Recommendation\n\nFor the specific vulnerability sink `!showMinOnly`, it's hard to provide a specific fix without the context of the code. However, if `showMinOnly` is a function that uses prohibited C functions, you should replace these with safer alternatives. For example, if `showMinOnly` uses `strcpy`, you could replace it with `strncpy` or even better, use C++ strings and their methods.\n\n## Library Dependencies\n\nWithout the specific code, it's hard to list the exact library dependencies. However, in general, C++ programs might require the following libraries:\n\n- iostream\n- string\n- vector\n- map\n- etc.\n\n## OWASP and CWE Links\n\n- [CWE-676: Use of Potentially Dangerous Function](https://cwe.mitre.org/data/definitions/676.html)\n\nPlease note that the links provided are active and accessible for anonymous users at the time of writing this report."
+              },
+              "properties": {
+                "tags": [
+                  "DS154189"
+                ]
+              }
+            },
+            {
+              "id": "ec16e534-aa28-30b6-9f54-86623ac9730f",
+              "help": {
+                "text": "",
+                "markdown": "## Description\n\n\"Detected Prohibited C Function\" vulnerability in C++ refers to the use of certain C standard library functions that are known to be dangerous due to their potential to cause buffer overflows, format string vulnerabilities, or other problems. These functions are often prohibited in secure coding standards. In the provided code snippet, the function `vsnprintf` is used, which is generally safe, but can lead to vulnerabilities if not used correctly.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, it is recommended to use safer alternatives to these functions whenever possible. For instance, instead of using `vsnprintf`, consider using `snprintf` with a maximum size for the output string. This can help prevent buffer overflow vulnerabilities.\n\n## Source Code Fix Recommendation\n\nHere is a safer alternative using `snprintf`:\n\n```cpp\n#include <cstdio>\n#include <cstdarg>\n\nvoid safe_printf(const char* format, ...) {\n    va_list args;\n    va_start(args, format);\n    char buffer[256];\n    vsnprintf(buffer, sizeof(buffer), format, args);\n    va_end(args);\n    printf(\"%s\", buffer);\n}\n```\n\n## Library Dependencies\n\nThe code example requires the following library dependencies:\n\n- `<cstdio>`: for `vsnprintf` and `printf`\n- `<cstdarg>`: for `va_list`, `va_start`, and `va_end`\n\n## OWASP and CWE Links\n\n- [CWE-676: Use of Potentially Dangerous Function](https://cwe.mitre.org/data/definitions/676.html)"
+              },
+              "properties": {
+                "tags": [
+                  "DS154189"
                 ]
               }
             }
@@ -155,95 +419,30 @@
       "language": "en-US",
       "results": [
         {
-          "ruleId": "glog-102749f2-6bc9-465c-9839-50965d4a7767",
+          "ruleId": "5bd42fdf-e1f0-320e-a23a-395db8b1cda0",
           "kind": "fail",
-          "level": "note",
+          "level": "warning",
           "message": {
-            "text": "Detected Vulnerability in C Function (memcpy)"
+            "text": "Detected Prohibited C Function"
           },
           "locations": [
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "src/header/TransferBench.hpp"
+                  "uri": "src/client/Presets/PeerToPeer.hpp"
                 },
                 "region": {
-                  "startLine": 2597,
-                  "startColumn": 12,
-                  "endLine": 2597,
-                  "endColumn": 53,
-                  "charOffset": 106706,
-                  "charLength": 41,
+                  "startLine": 286,
+                  "startColumn": 34,
+                  "endLine": 286,
+                  "endColumn": 40,
+                  "charOffset": 12851,
+                  "charLength": 6,
                   "snippet": {
-                    "text": "memcpy(p.dst[i], src, p.N * sizeof(float)",
+                    "text": "printf",
                     "rendered": {
-                      "text": "memcpy(p.dst[i], src, p.N * sizeof(float)",
-                      "markdown": "`memcpy(p.dst[i], src, p.N * sizeof(float)`"
-                    }
-                  },
-                  "sourceLanguage": "cpp"
-                }
-              }
-            }
-          ],
-          "fixes": [
-            {
-              "description": {
-                "text": "There are a number of conditions in which memcpy can introduce a vulnerability (mismatched buffer sizes, null pointers, etc.). More secure alternitives perform additional validation of the source and destination buffer"
-              },
-              "artifactChanges": [
-                {
-                  "artifactLocation": {
-                    "uri": "src/header/TransferBench.hpp"
-                  },
-                  "replacements": [
-                    {
-                      "deletedRegion": {
-                        "charOffset": 106706,
-                        "charLength": 41
-                      },
-                      "insertedContent": {
-                        "text": "memcpy_s(p.dst[i], <size of p.dst[i]>,  src,  p.N * sizeof(float)"
-                      }
-                    }
-                  ]
-                }
-              ]
-            }
-          ],
-          "properties": {
-            "DevSkimSeverity": "BestPractice",
-            "DevSkimConfidence": "High",
-            "tags": [
-              "API.DangerousAPI.ProblematicFunction"
-            ]
-          }
-        },
-        {
-          "ruleId": "glog-25d85a9a-742a-41ac-918c-d1757755cfba",
-          "kind": "fail",
-          "level": "error",
-          "message": {
-            "text": "Avoid Using Weak or Non-Cryptographic Random Number Generators"
-          },
-          "locations": [
-            {
-              "physicalLocation": {
-                "artifactLocation": {
-                  "uri": "src/header/TransferBench.hpp"
-                },
-                "region": {
-                  "startLine": 2471,
-                  "startColumn": 13,
-                  "endLine": 2471,
-                  "endColumn": 21,
-                  "charOffset": 102335,
-                  "charLength": 8,
-                  "snippet": {
-                    "text": "shuffle(",
-                    "rendered": {
-                      "text": "shuffle(",
-                      "markdown": "`shuffle(`"
+                      "text": "printf",
+                      "markdown": "`printf`"
                     }
                   },
                   "sourceLanguage": "cpp"
@@ -252,38 +451,38 @@
             }
           ],
           "properties": {
-            "DevSkimSeverity": "Important",
+            "DevSkimSeverity": "Moderate",
             "DevSkimConfidence": "High",
             "tags": [
-              "Cryptography.PRNG.Weak"
+              "API.DangerousAPI.BannedFunction"
             ]
           }
         },
         {
-          "ruleId": "glog-d07df416-c119-4ffe-923c-bb91125df9fe",
+          "ruleId": "931b3ea3-191e-3306-8e75-10edf555689b",
           "kind": "fail",
-          "level": "note",
+          "level": "warning",
           "message": {
-            "text": "Detected Vulnerability in C Function (memcpy)"
+            "text": "\"Prohibited C Function Found\""
           },
           "locations": [
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "src/header/TransferBench.hpp"
+                  "uri": "src/client/Presets/PeerToPeer.hpp"
                 },
                 "region": {
-                  "startLine": 2169,
-                  "startColumn": 10,
-                  "endLine": 2169,
-                  "endColumn": 86,
-                  "charOffset": 89127,
-                  "charLength": 76,
+                  "startLine": 283,
+                  "startColumn": 30,
+                  "endLine": 283,
+                  "endColumn": 36,
+                  "charOffset": 12772,
+                  "charLength": 6,
                   "snippet": {
-                    "text": "memcpy(cpuBufferPtr, cfg.data.fillPattern.data(), patternLen * sizeof(float)",
+                    "text": "printf",
                     "rendered": {
-                      "text": "memcpy(cpuBufferPtr, cfg.data.fillPattern.data(), patternLen * sizeof(float)",
-                      "markdown": "`memcpy(cpuBufferPtr, cfg.data.fillPattern.data(), patternLen * sizeof(float)`"
+                      "text": "printf",
+                      "markdown": "`printf`"
                     }
                   },
                   "sourceLanguage": "cpp"
@@ -291,64 +490,39 @@
               }
             }
           ],
-          "fixes": [
-            {
-              "description": {
-                "text": "There are a number of conditions in which memcpy can introduce a vulnerability (mismatched buffer sizes, null pointers, etc.). More secure alternitives perform additional validation of the source and destination buffer"
-              },
-              "artifactChanges": [
-                {
-                  "artifactLocation": {
-                    "uri": "src/header/TransferBench.hpp"
-                  },
-                  "replacements": [
-                    {
-                      "deletedRegion": {
-                        "charOffset": 89127,
-                        "charLength": 76
-                      },
-                      "insertedContent": {
-                        "text": "memcpy_s(cpuBufferPtr, <size of cpuBufferPtr>,  cfg.data.fillPattern.data(),  patternLen * sizeof(float)"
-                      }
-                    }
-                  ]
-                }
-              ]
-            }
-          ],
           "properties": {
-            "DevSkimSeverity": "BestPractice",
+            "DevSkimSeverity": "Moderate",
             "DevSkimConfidence": "High",
             "tags": [
-              "API.DangerousAPI.ProblematicFunction"
+              "API.DangerousAPI.BannedFunction"
             ]
           }
         },
         {
-          "ruleId": "glog-eef758ac-21c6-4c2c-907f-18b966505c5c",
+          "ruleId": "fba98b0f-3327-3d1b-a2c4-ebb1d5050b00",
           "kind": "fail",
-          "level": "note",
+          "level": "warning",
           "message": {
-            "text": "Detected Vulnerability in C Function (memcpy)"
+            "text": "Detected Prohibited C Function"
           },
           "locations": [
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "src/header/TransferBench.hpp"
+                  "uri": "src/client/Presets/PeerToPeer.hpp"
                 },
                 "region": {
-                  "startLine": 2173,
-                  "startColumn": 10,
-                  "endLine": 2173,
-                  "endColumn": 84,
-                  "charOffset": 89286,
-                  "charLength": 74,
+                  "startLine": 278,
+                  "startColumn": 48,
+                  "endLine": 278,
+                  "endColumn": 54,
+                  "charOffset": 12612,
+                  "charLength": 6,
                   "snippet": {
-                    "text": "memcpy(cpuBufferPtr, cfg.data.fillPattern.data(), leftOver * sizeof(float)",
+                    "text": "printf",
                     "rendered": {
-                      "text": "memcpy(cpuBufferPtr, cfg.data.fillPattern.data(), leftOver * sizeof(float)",
-                      "markdown": "`memcpy(cpuBufferPtr, cfg.data.fillPattern.data(), leftOver * sizeof(float)`"
+                      "text": "printf",
+                      "markdown": "`printf`"
                     }
                   },
                   "sourceLanguage": "cpp"
@@ -356,64 +530,39 @@
               }
             }
           ],
-          "fixes": [
-            {
-              "description": {
-                "text": "There are a number of conditions in which memcpy can introduce a vulnerability (mismatched buffer sizes, null pointers, etc.). More secure alternitives perform additional validation of the source and destination buffer"
-              },
-              "artifactChanges": [
-                {
-                  "artifactLocation": {
-                    "uri": "src/header/TransferBench.hpp"
-                  },
-                  "replacements": [
-                    {
-                      "deletedRegion": {
-                        "charOffset": 89286,
-                        "charLength": 74
-                      },
-                      "insertedContent": {
-                        "text": "memcpy_s(cpuBufferPtr, <size of cpuBufferPtr>,  cfg.data.fillPattern.data(),  leftOver * sizeof(float)"
-                      }
-                    }
-                  ]
-                }
-              ]
-            }
-          ],
           "properties": {
-            "DevSkimSeverity": "BestPractice",
+            "DevSkimSeverity": "Moderate",
             "DevSkimConfidence": "High",
             "tags": [
-              "API.DangerousAPI.ProblematicFunction"
+              "API.DangerousAPI.BannedFunction"
             ]
           }
         },
         {
-          "ruleId": "glog-2d789269-2775-4900-9415-977e2277e25b",
+          "ruleId": "c7509b5a-ac08-39f2-91d4-af6a9780d3db",
           "kind": "fail",
-          "level": "note",
+          "level": "warning",
           "message": {
-            "text": "Detected Vulnerability in C Function (strlen)"
+            "text": "Detected Prohibited C Function"
           },
           "locations": [
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "src/header/TransferBench.hpp"
+                  "uri": "src/client/Presets/AllToAll.hpp"
                 },
                 "region": {
-                  "startLine": 1522,
-                  "startColumn": 49,
-                  "endLine": 1522,
-                  "endColumn": 66,
-                  "charOffset": 63134,
-                  "charLength": 17,
+                  "startLine": 74,
+                  "startColumn": 25,
+                  "endLine": 74,
+                  "endColumn": 31,
+                  "charOffset": 2929,
+                  "charLength": 6,
                   "snippet": {
-                    "text": "strlen(\"RoCE v2\")",
+                    "text": "printf",
                     "rendered": {
-                      "text": "strlen(\"RoCE v2\")",
-                      "markdown": "`strlen(\"RoCE v2\")`"
+                      "text": "printf",
+                      "markdown": "`printf`"
                     }
                   },
                   "sourceLanguage": "cpp"
@@ -421,87 +570,39 @@
               }
             }
           ],
-          "fixes": [
-            {
-              "description": {
-                "text": "If a string is missing a null terminator, strlen will read past the end of the buffer"
-              },
-              "artifactChanges": [
-                {
-                  "artifactLocation": {
-                    "uri": "src/header/TransferBench.hpp"
-                  },
-                  "replacements": [
-                    {
-                      "deletedRegion": {
-                        "charOffset": 63134,
-                        "charLength": 17
-                      },
-                      "insertedContent": {
-                        "text": "strlen_s(\"RoCE v2\", <size of \"RoCE v2\">)"
-                      }
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "description": {
-                "text": "If a string is missing a null terminator, strlen will read past the end of the buffer"
-              },
-              "artifactChanges": [
-                {
-                  "artifactLocation": {
-                    "uri": "src/header/TransferBench.hpp"
-                  },
-                  "replacements": [
-                    {
-                      "deletedRegion": {
-                        "charOffset": 63134,
-                        "charLength": 17
-                      },
-                      "insertedContent": {
-                        "text": "strnlen(\"RoCE v2\", <size of \"RoCE v2\">)"
-                      }
-                    }
-                  ]
-                }
-              ]
-            }
-          ],
           "properties": {
-            "DevSkimSeverity": "BestPractice",
+            "DevSkimSeverity": "Moderate",
             "DevSkimConfidence": "High",
             "tags": [
-              "API.DangerousAPI.ProblematicFunction"
+              "API.DangerousAPI.BannedFunction"
             ]
           }
         },
         {
-          "ruleId": "glog-5b80e359-a67c-41a3-b8d7-055cb990fdaf",
+          "ruleId": "9b2d6eeb-2690-323c-af21-a1101d093c73",
           "kind": "fail",
-          "level": "note",
+          "level": "warning",
           "message": {
-            "text": "Detected Vulnerability in C Function (strlen)"
+            "text": "\"Prohibited C Function Found\""
           },
           "locations": [
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "src/header/TransferBench.hpp"
+                  "uri": "src/client/Presets/PeerToPeer.hpp"
                 },
                 "region": {
-                  "startLine": 1519,
-                  "startColumn": 47,
-                  "endLine": 1519,
-                  "endColumn": 64,
-                  "charOffset": 63029,
-                  "charLength": 17,
+                  "startLine": 275,
+                  "startColumn": 28,
+                  "endLine": 275,
+                  "endColumn": 34,
+                  "charOffset": 12422,
+                  "charLength": 6,
                   "snippet": {
-                    "text": "strlen(\"RoCE v1\")",
+                    "text": "printf",
                     "rendered": {
-                      "text": "strlen(\"RoCE v1\")",
-                      "markdown": "`strlen(\"RoCE v1\")`"
+                      "text": "printf",
+                      "markdown": "`printf`"
                     }
                   },
                   "sourceLanguage": "cpp"
@@ -509,87 +610,39 @@
               }
             }
           ],
-          "fixes": [
-            {
-              "description": {
-                "text": "If a string is missing a null terminator, strlen will read past the end of the buffer"
-              },
-              "artifactChanges": [
-                {
-                  "artifactLocation": {
-                    "uri": "src/header/TransferBench.hpp"
-                  },
-                  "replacements": [
-                    {
-                      "deletedRegion": {
-                        "charOffset": 63029,
-                        "charLength": 17
-                      },
-                      "insertedContent": {
-                        "text": "strlen_s(\"RoCE v1\", <size of \"RoCE v1\">)"
-                      }
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "description": {
-                "text": "If a string is missing a null terminator, strlen will read past the end of the buffer"
-              },
-              "artifactChanges": [
-                {
-                  "artifactLocation": {
-                    "uri": "src/header/TransferBench.hpp"
-                  },
-                  "replacements": [
-                    {
-                      "deletedRegion": {
-                        "charOffset": 63029,
-                        "charLength": 17
-                      },
-                      "insertedContent": {
-                        "text": "strnlen(\"RoCE v1\", <size of \"RoCE v1\">)"
-                      }
-                    }
-                  ]
-                }
-              ]
-            }
-          ],
           "properties": {
-            "DevSkimSeverity": "BestPractice",
+            "DevSkimSeverity": "Moderate",
             "DevSkimConfidence": "High",
             "tags": [
-              "API.DangerousAPI.ProblematicFunction"
+              "API.DangerousAPI.BannedFunction"
             ]
           }
         },
         {
-          "ruleId": "glog-05cdbd82-0479-4e32-866f-bf3645f37866",
+          "ruleId": "db77f2b6-bc78-3844-a7d2-3646c7b55681",
           "kind": "fail",
-          "level": "note",
+          "level": "warning",
           "message": {
-            "text": "Detected Vulnerability in C Function (strlen)"
+            "text": "\"Prohibited C Function Found\""
           },
           "locations": [
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "src/header/TransferBench.hpp"
+                  "uri": "src/client/Presets/PeerToPeer.hpp"
                 },
                 "region": {
-                  "startLine": 1518,
-                  "startColumn": 47,
-                  "endLine": 1518,
-                  "endColumn": 67,
-                  "charOffset": 62955,
-                  "charLength": 20,
+                  "startLine": 266,
+                  "startColumn": 32,
+                  "endLine": 266,
+                  "endColumn": 38,
+                  "charOffset": 12186,
+                  "charLength": 6,
                   "snippet": {
-                    "text": "strlen(\"IB/RoCE v1\")",
+                    "text": "printf",
                     "rendered": {
-                      "text": "strlen(\"IB/RoCE v1\")",
-                      "markdown": "`strlen(\"IB/RoCE v1\")`"
+                      "text": "printf",
+                      "markdown": "`printf`"
                     }
                   },
                   "sourceLanguage": "cpp"
@@ -597,87 +650,39 @@
               }
             }
           ],
-          "fixes": [
-            {
-              "description": {
-                "text": "If a string is missing a null terminator, strlen will read past the end of the buffer"
-              },
-              "artifactChanges": [
-                {
-                  "artifactLocation": {
-                    "uri": "src/header/TransferBench.hpp"
-                  },
-                  "replacements": [
-                    {
-                      "deletedRegion": {
-                        "charOffset": 62955,
-                        "charLength": 20
-                      },
-                      "insertedContent": {
-                        "text": "strlen_s(\"IB/RoCE v1\", <size of \"IB/RoCE v1\">)"
-                      }
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "description": {
-                "text": "If a string is missing a null terminator, strlen will read past the end of the buffer"
-              },
-              "artifactChanges": [
-                {
-                  "artifactLocation": {
-                    "uri": "src/header/TransferBench.hpp"
-                  },
-                  "replacements": [
-                    {
-                      "deletedRegion": {
-                        "charOffset": 62955,
-                        "charLength": 20
-                      },
-                      "insertedContent": {
-                        "text": "strnlen(\"IB/RoCE v1\", <size of \"IB/RoCE v1\">)"
-                      }
-                    }
-                  ]
-                }
-              ]
-            }
-          ],
           "properties": {
-            "DevSkimSeverity": "BestPractice",
+            "DevSkimSeverity": "Moderate",
             "DevSkimConfidence": "High",
             "tags": [
-              "API.DangerousAPI.ProblematicFunction"
+              "API.DangerousAPI.BannedFunction"
             ]
           }
         },
         {
-          "ruleId": "glog-a1afe8da-beb6-4c49-a009-e6c6c8fa6a9a",
+          "ruleId": "daed3092-3ab9-38e1-ba61-044749172b23",
           "kind": "fail",
-          "level": "note",
+          "level": "warning",
           "message": {
-            "text": "Detected Vulnerability in C Function (strlen)"
+            "text": "\"Prohibited C Function Found\""
           },
           "locations": [
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "src/header/TransferBench.hpp"
+                  "uri": "src/client/Presets/PeerToPeer.hpp"
                 },
                 "region": {
-                  "startLine": 1517,
-                  "startColumn": 8,
-                  "endLine": 1517,
-                  "endColumn": 29,
-                  "charOffset": 62883,
-                  "charLength": 21,
+                  "startLine": 258,
+                  "startColumn": 30,
+                  "endLine": 258,
+                  "endColumn": 36,
+                  "charOffset": 11867,
+                  "charLength": 6,
                   "snippet": {
-                    "text": "strlen(gidRoceVerStr)",
+                    "text": "printf",
                     "rendered": {
-                      "text": "strlen(gidRoceVerStr)",
-                      "markdown": "`strlen(gidRoceVerStr)`"
+                      "text": "printf",
+                      "markdown": "`printf`"
                     }
                   },
                   "sourceLanguage": "cpp"
@@ -685,64 +690,696 @@
               }
             }
           ],
-          "fixes": [
-            {
-              "description": {
-                "text": "If a string is missing a null terminator, strlen will read past the end of the buffer"
-              },
-              "artifactChanges": [
-                {
-                  "artifactLocation": {
-                    "uri": "src/header/TransferBench.hpp"
-                  },
-                  "replacements": [
-                    {
-                      "deletedRegion": {
-                        "charOffset": 62883,
-                        "charLength": 21
-                      },
-                      "insertedContent": {
-                        "text": "strlen_s(gidRoceVerStr, <size of gidRoceVerStr>)"
-                      }
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "description": {
-                "text": "If a string is missing a null terminator, strlen will read past the end of the buffer"
-              },
-              "artifactChanges": [
-                {
-                  "artifactLocation": {
-                    "uri": "src/header/TransferBench.hpp"
-                  },
-                  "replacements": [
-                    {
-                      "deletedRegion": {
-                        "charOffset": 62883,
-                        "charLength": 21
-                      },
-                      "insertedContent": {
-                        "text": "strnlen(gidRoceVerStr, <size of gidRoceVerStr>)"
-                      }
-                    }
-                  ]
-                }
-              ]
-            }
-          ],
           "properties": {
-            "DevSkimSeverity": "BestPractice",
+            "DevSkimSeverity": "Moderate",
             "DevSkimConfidence": "High",
             "tags": [
-              "API.DangerousAPI.ProblematicFunction"
+              "API.DangerousAPI.BannedFunction"
             ]
           }
         },
         {
-          "ruleId": "glog-42a26b4a-7818-4388-a172-bea2cbf909f9",
+          "ruleId": "a3cead6e-54e7-3719-876e-53a128e20913",
+          "kind": "fail",
+          "level": "warning",
+          "message": {
+            "text": "Detected Prohibited C Function"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/client/Presets/PeerToPeer.hpp"
+                },
+                "region": {
+                  "startLine": 261,
+                  "startColumn": 46,
+                  "endLine": 261,
+                  "endColumn": 52,
+                  "charOffset": 12021,
+                  "charLength": 6,
+                  "snippet": {
+                    "text": "printf",
+                    "rendered": {
+                      "text": "printf",
+                      "markdown": "`printf`"
+                    }
+                  },
+                  "sourceLanguage": "cpp"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "DevSkimSeverity": "Moderate",
+            "DevSkimConfidence": "High",
+            "tags": [
+              "API.DangerousAPI.BannedFunction"
+            ]
+          }
+        },
+        {
+          "ruleId": "ca3ddb02-af8f-37b2-84dc-400de9be822a",
+          "kind": "fail",
+          "level": "warning",
+          "message": {
+            "text": "\"Prohibited C Function Found\""
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/client/Presets/PeerToPeer.hpp"
+                },
+                "region": {
+                  "startLine": 252,
+                  "startColumn": 32,
+                  "endLine": 252,
+                  "endColumn": 38,
+                  "charOffset": 11678,
+                  "charLength": 6,
+                  "snippet": {
+                    "text": "printf",
+                    "rendered": {
+                      "text": "printf",
+                      "markdown": "`printf`"
+                    }
+                  },
+                  "sourceLanguage": "cpp"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "DevSkimSeverity": "Moderate",
+            "DevSkimConfidence": "High",
+            "tags": [
+              "API.DangerousAPI.BannedFunction"
+            ]
+          }
+        },
+        {
+          "ruleId": "50f6eb33-8a1c-326e-9a2f-ade84f7dc78b",
+          "kind": "fail",
+          "level": "warning",
+          "message": {
+            "text": "Detected Prohibited C Function"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/client/Presets/PeerToPeer.hpp"
+                },
+                "region": {
+                  "startLine": 233,
+                  "startColumn": 46,
+                  "endLine": 233,
+                  "endColumn": 52,
+                  "charOffset": 10987,
+                  "charLength": 6,
+                  "snippet": {
+                    "text": "printf",
+                    "rendered": {
+                      "text": "printf",
+                      "markdown": "`printf`"
+                    }
+                  },
+                  "sourceLanguage": "cpp"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "DevSkimSeverity": "Moderate",
+            "DevSkimConfidence": "High",
+            "tags": [
+              "API.DangerousAPI.BannedFunction"
+            ]
+          }
+        },
+        {
+          "ruleId": "7934f334-36f4-3784-bd03-d96334c3dcea",
+          "kind": "fail",
+          "level": "warning",
+          "message": {
+            "text": "\"Prohibited C Function Found\""
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/client/Presets/PeerToPeer.hpp"
+                },
+                "region": {
+                  "startLine": 244,
+                  "startColumn": 30,
+                  "endLine": 244,
+                  "endColumn": 36,
+                  "charOffset": 11345,
+                  "charLength": 6,
+                  "snippet": {
+                    "text": "printf",
+                    "rendered": {
+                      "text": "printf",
+                      "markdown": "`printf`"
+                    }
+                  },
+                  "sourceLanguage": "cpp"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "DevSkimSeverity": "Moderate",
+            "DevSkimConfidence": "High",
+            "tags": [
+              "API.DangerousAPI.BannedFunction"
+            ]
+          }
+        },
+        {
+          "ruleId": "82f75276-a546-303a-9a7b-f8b7fc48374f",
+          "kind": "fail",
+          "level": "warning",
+          "message": {
+            "text": "Detected Prohibited C Function"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/client/Presets/PeerToPeer.hpp"
+                },
+                "region": {
+                  "startLine": 247,
+                  "startColumn": 46,
+                  "endLine": 247,
+                  "endColumn": 52,
+                  "charOffset": 11508,
+                  "charLength": 6,
+                  "snippet": {
+                    "text": "printf",
+                    "rendered": {
+                      "text": "printf",
+                      "markdown": "`printf`"
+                    }
+                  },
+                  "sourceLanguage": "cpp"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "DevSkimSeverity": "Moderate",
+            "DevSkimConfidence": "High",
+            "tags": [
+              "API.DangerousAPI.BannedFunction"
+            ]
+          }
+        },
+        {
+          "ruleId": "6b77b512-1cc4-3938-b76e-7f6b8822e30c",
+          "kind": "fail",
+          "level": "warning",
+          "message": {
+            "text": "Detected Prohibited C Function"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/client/Presets/PeerToPeer.hpp"
+                },
+                "region": {
+                  "startLine": 216,
+                  "startColumn": 48,
+                  "endLine": 216,
+                  "endColumn": 54,
+                  "charOffset": 10391,
+                  "charLength": 6,
+                  "snippet": {
+                    "text": "printf",
+                    "rendered": {
+                      "text": "printf",
+                      "markdown": "`printf`"
+                    }
+                  },
+                  "sourceLanguage": "cpp"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "DevSkimSeverity": "Moderate",
+            "DevSkimConfidence": "High",
+            "tags": [
+              "API.DangerousAPI.BannedFunction"
+            ]
+          }
+        },
+        {
+          "ruleId": "6671e910-e97c-360e-a9f6-a9b412b08ddc",
+          "kind": "fail",
+          "level": "warning",
+          "message": {
+            "text": "\"Prohibited C Function Found\""
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/client/Presets/PeerToPeer.hpp"
+                },
+                "region": {
+                  "startLine": 238,
+                  "startColumn": 32,
+                  "endLine": 238,
+                  "endColumn": 38,
+                  "charOffset": 11157,
+                  "charLength": 6,
+                  "snippet": {
+                    "text": "printf",
+                    "rendered": {
+                      "text": "printf",
+                      "markdown": "`printf`"
+                    }
+                  },
+                  "sourceLanguage": "cpp"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "DevSkimSeverity": "Moderate",
+            "DevSkimConfidence": "High",
+            "tags": [
+              "API.DangerousAPI.BannedFunction"
+            ]
+          }
+        },
+        {
+          "ruleId": "eda3db78-2f94-32b3-a91e-f33546892bc6",
+          "kind": "fail",
+          "level": "warning",
+          "message": {
+            "text": "\"Prohibited C Function Found\""
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/client/Presets/PeerToPeer.hpp"
+                },
+                "region": {
+                  "startLine": 230,
+                  "startColumn": 30,
+                  "endLine": 230,
+                  "endColumn": 36,
+                  "charOffset": 10824,
+                  "charLength": 6,
+                  "snippet": {
+                    "text": "printf",
+                    "rendered": {
+                      "text": "printf",
+                      "markdown": "`printf`"
+                    }
+                  },
+                  "sourceLanguage": "cpp"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "DevSkimSeverity": "Moderate",
+            "DevSkimConfidence": "High",
+            "tags": [
+              "API.DangerousAPI.BannedFunction"
+            ]
+          }
+        },
+        {
+          "ruleId": "84e04fc0-0056-31eb-8083-38e9534cff3a",
+          "kind": "fail",
+          "level": "warning",
+          "message": {
+            "text": "\"Prohibited C Function Found\""
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/client/Presets/PeerToPeer.hpp"
+                },
+                "region": {
+                  "startLine": 94,
+                  "startColumn": 26,
+                  "endLine": 94,
+                  "endColumn": 32,
+                  "charOffset": 4613,
+                  "charLength": 6,
+                  "snippet": {
+                    "text": "printf",
+                    "rendered": {
+                      "text": "printf",
+                      "markdown": "`printf`"
+                    }
+                  },
+                  "sourceLanguage": "cpp"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "DevSkimSeverity": "Moderate",
+            "DevSkimConfidence": "High",
+            "tags": [
+              "API.DangerousAPI.BannedFunction"
+            ]
+          }
+        },
+        {
+          "ruleId": "5087f8bb-d69f-32fd-a25c-45b0084cdce0",
+          "kind": "fail",
+          "level": "warning",
+          "message": {
+            "text": "\"Prohibited C Function Found\""
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/client/Presets/PeerToPeer.hpp"
+                },
+                "region": {
+                  "startLine": 223,
+                  "startColumn": 30,
+                  "endLine": 223,
+                  "endColumn": 36,
+                  "charOffset": 10607,
+                  "charLength": 6,
+                  "snippet": {
+                    "text": "printf",
+                    "rendered": {
+                      "text": "printf",
+                      "markdown": "`printf`"
+                    }
+                  },
+                  "sourceLanguage": "cpp"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "DevSkimSeverity": "Moderate",
+            "DevSkimConfidence": "High",
+            "tags": [
+              "API.DangerousAPI.BannedFunction"
+            ]
+          }
+        },
+        {
+          "ruleId": "d5a3c66b-63f2-3c43-8fcb-97aa3cf46c76",
+          "kind": "fail",
+          "level": "warning",
+          "message": {
+            "text": "\"Prohibited C Function Found\""
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/client/Presets/PeerToPeer.hpp"
+                },
+                "region": {
+                  "startLine": 213,
+                  "startColumn": 28,
+                  "endLine": 213,
+                  "endColumn": 34,
+                  "charOffset": 10276,
+                  "charLength": 6,
+                  "snippet": {
+                    "text": "printf",
+                    "rendered": {
+                      "text": "printf",
+                      "markdown": "`printf`"
+                    }
+                  },
+                  "sourceLanguage": "cpp"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "DevSkimSeverity": "Moderate",
+            "DevSkimConfidence": "High",
+            "tags": [
+              "API.DangerousAPI.BannedFunction"
+            ]
+          }
+        },
+        {
+          "ruleId": "1394ea3e-ae82-33a4-904d-e5fa07ad0c09",
+          "kind": "fail",
+          "level": "warning",
+          "message": {
+            "text": "\"Prohibited C Function Found\""
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/client/Presets/PeerToPeer.hpp"
+                },
+                "region": {
+                  "startLine": 89,
+                  "startColumn": 26,
+                  "endLine": 89,
+                  "endColumn": 32,
+                  "charOffset": 4444,
+                  "charLength": 6,
+                  "snippet": {
+                    "text": "printf",
+                    "rendered": {
+                      "text": "printf",
+                      "markdown": "`printf`"
+                    }
+                  },
+                  "sourceLanguage": "cpp"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "DevSkimSeverity": "Moderate",
+            "DevSkimConfidence": "High",
+            "tags": [
+              "API.DangerousAPI.BannedFunction"
+            ]
+          }
+        },
+        {
+          "ruleId": "a03999f9-1332-33ea-9f78-f0ad9f010e01",
+          "kind": "fail",
+          "level": "warning",
+          "message": {
+            "text": "Detected Prohibited C Function"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/client/Presets/PeerToPeer.hpp"
+                },
+                "region": {
+                  "startLine": 44,
+                  "startColumn": 22,
+                  "endLine": 44,
+                  "endColumn": 28,
+                  "charOffset": 2191,
+                  "charLength": 6,
+                  "snippet": {
+                    "text": "printf",
+                    "rendered": {
+                      "text": "printf",
+                      "markdown": "`printf`"
+                    }
+                  },
+                  "sourceLanguage": "cpp"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "DevSkimSeverity": "Moderate",
+            "DevSkimConfidence": "High",
+            "tags": [
+              "API.DangerousAPI.BannedFunction"
+            ]
+          }
+        },
+        {
+          "ruleId": "e96fd9a7-c909-3626-90f3-c65814254fc1",
+          "kind": "fail",
+          "level": "warning",
+          "message": {
+            "text": "Detected Prohibited C Function"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/client/Presets/OneToAll.hpp"
+                },
+                "region": {
+                  "startLine": 47,
+                  "startColumn": 25,
+                  "endLine": 47,
+                  "endColumn": 31,
+                  "charOffset": 2241,
+                  "charLength": 6,
+                  "snippet": {
+                    "text": "printf",
+                    "rendered": {
+                      "text": "printf",
+                      "markdown": "`printf`"
+                    }
+                  },
+                  "sourceLanguage": "cpp"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "DevSkimSeverity": "Moderate",
+            "DevSkimConfidence": "High",
+            "tags": [
+              "API.DangerousAPI.BannedFunction"
+            ]
+          }
+        },
+        {
+          "ruleId": "368c71cc-9fab-3ddb-9b8b-93bbb6886566",
+          "kind": "fail",
+          "level": "warning",
+          "message": {
+            "text": "\"Prohibited C Function Identified\""
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/client/Presets/PeerToPeer.hpp"
+                },
+                "region": {
+                  "startLine": 91,
+                  "startColumn": 27,
+                  "endLine": 91,
+                  "endColumn": 33,
+                  "charOffset": 4490,
+                  "charLength": 6,
+                  "snippet": {
+                    "text": "printf",
+                    "rendered": {
+                      "text": "printf",
+                      "markdown": "`printf`"
+                    }
+                  },
+                  "sourceLanguage": "cpp"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "DevSkimSeverity": "Moderate",
+            "DevSkimConfidence": "High",
+            "tags": [
+              "API.DangerousAPI.BannedFunction"
+            ]
+          }
+        },
+        {
+          "ruleId": "e1170c4d-b90d-37d8-9693-552bb4b0d531",
+          "kind": "fail",
+          "level": "warning",
+          "message": {
+            "text": "Detected Prohibited C Function"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/client/Presets/PeerToPeer.hpp"
+                },
+                "region": {
+                  "startLine": 115,
+                  "startColumn": 44,
+                  "endLine": 115,
+                  "endColumn": 50,
+                  "charOffset": 5642,
+                  "charLength": 6,
+                  "snippet": {
+                    "text": "printf",
+                    "rendered": {
+                      "text": "printf",
+                      "markdown": "`printf`"
+                    }
+                  },
+                  "sourceLanguage": "cpp"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "DevSkimSeverity": "Moderate",
+            "DevSkimConfidence": "High",
+            "tags": [
+              "API.DangerousAPI.BannedFunction"
+            ]
+          }
+        },
+        {
+          "ruleId": "76afd127-0f62-3ebb-8e0e-6c5208f02052",
+          "kind": "fail",
+          "level": "warning",
+          "message": {
+            "text": "\"Prohibited C Function Found\""
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/client/Presets/PeerToPeer.hpp"
+                },
+                "region": {
+                  "startLine": 86,
+                  "startColumn": 24,
+                  "endLine": 86,
+                  "endColumn": 30,
+                  "charOffset": 4323,
+                  "charLength": 6,
+                  "snippet": {
+                    "text": "printf",
+                    "rendered": {
+                      "text": "printf",
+                      "markdown": "`printf`"
+                    }
+                  },
+                  "sourceLanguage": "cpp"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "DevSkimSeverity": "Moderate",
+            "DevSkimConfidence": "High",
+            "tags": [
+              "API.DangerousAPI.BannedFunction"
+            ]
+          }
+        },
+        {
+          "ruleId": "829c3176-fa4a-3786-a88f-bb2c48f19f17",
           "kind": "fail",
           "level": "note",
           "message": {
@@ -830,30 +1467,30 @@
           }
         },
         {
-          "ruleId": "glog-03d57739-e18d-4a44-b4f0-fa17e258ae49",
+          "ruleId": "7d2149e6-ed45-3c99-b59c-c99f299b602a",
           "kind": "fail",
-          "level": "note",
+          "level": "warning",
           "message": {
-            "text": "Detected Vulnerability in C Function (strlen)"
+            "text": "Detected Prohibited C Function"
           },
           "locations": [
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "src/client/EnvVars.hpp"
+                  "uri": "src/client/Presets/AllToAllSweep.hpp"
                 },
                 "region": {
-                  "startLine": 177,
-                  "startColumn": 23,
-                  "endLine": 177,
-                  "endColumn": 38,
-                  "charOffset": 9334,
-                  "charLength": 15,
+                  "startLine": 213,
+                  "startColumn": 24,
+                  "endLine": 213,
+                  "endColumn": 30,
+                  "charOffset": 8766,
+                  "charLength": 6,
                   "snippet": {
-                    "text": "strlen(pattern)",
+                    "text": "printf",
                     "rendered": {
-                      "text": "strlen(pattern)",
-                      "markdown": "`strlen(pattern)`"
+                      "text": "printf",
+                      "markdown": "`printf`"
                     }
                   },
                   "sourceLanguage": "cpp"
@@ -861,87 +1498,39 @@
               }
             }
           ],
-          "fixes": [
-            {
-              "description": {
-                "text": "If a string is missing a null terminator, strlen will read past the end of the buffer"
-              },
-              "artifactChanges": [
-                {
-                  "artifactLocation": {
-                    "uri": "src/client/EnvVars.hpp"
-                  },
-                  "replacements": [
-                    {
-                      "deletedRegion": {
-                        "charOffset": 9334,
-                        "charLength": 15
-                      },
-                      "insertedContent": {
-                        "text": "strlen_s(pattern, <size of pattern>)"
-                      }
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "description": {
-                "text": "If a string is missing a null terminator, strlen will read past the end of the buffer"
-              },
-              "artifactChanges": [
-                {
-                  "artifactLocation": {
-                    "uri": "src/client/EnvVars.hpp"
-                  },
-                  "replacements": [
-                    {
-                      "deletedRegion": {
-                        "charOffset": 9334,
-                        "charLength": 15
-                      },
-                      "insertedContent": {
-                        "text": "strnlen(pattern, <size of pattern>)"
-                      }
-                    }
-                  ]
-                }
-              ]
-            }
-          ],
           "properties": {
-            "DevSkimSeverity": "BestPractice",
+            "DevSkimSeverity": "Moderate",
             "DevSkimConfidence": "High",
             "tags": [
-              "API.DangerousAPI.ProblematicFunction"
+              "API.DangerousAPI.BannedFunction"
             ]
           }
         },
         {
-          "ruleId": "glog-9f642a9d-bf00-4304-b96b-780f656fd116",
+          "ruleId": "24dcb43d-e1b1-3582-90e1-fc66bfc83263",
           "kind": "fail",
-          "level": "error",
+          "level": "warning",
           "message": {
-            "text": "Avoid Using Weak or Non-Cryptographic Random Number Generators"
+            "text": "Detected Prohibited C Function"
           },
           "locations": [
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "src/client/Presets/Sweep.hpp"
+                  "uri": "src/client/Client.cpp"
                 },
                 "region": {
-                  "startLine": 312,
-                  "startColumn": 11,
-                  "endLine": 312,
-                  "endColumn": 19,
-                  "charOffset": 13388,
-                  "charLength": 8,
+                  "startLine": 95,
+                  "startColumn": 61,
+                  "endLine": 95,
+                  "endColumn": 67,
+                  "charOffset": 3293,
+                  "charLength": 6,
                   "snippet": {
-                    "text": "shuffle(",
+                    "text": "printf",
                     "rendered": {
-                      "text": "shuffle(",
-                      "markdown": "`shuffle(`"
+                      "text": "printf",
+                      "markdown": "`printf`"
                     }
                   },
                   "sourceLanguage": "cpp"
@@ -950,10 +1539,250 @@
             }
           ],
           "properties": {
-            "DevSkimSeverity": "Important",
+            "DevSkimSeverity": "Moderate",
             "DevSkimConfidence": "High",
             "tags": [
-              "Cryptography.PRNG.Weak"
+              "API.DangerousAPI.BannedFunction"
+            ]
+          }
+        },
+        {
+          "ruleId": "b612c71e-83dd-3157-8176-08bafdd8b767",
+          "kind": "fail",
+          "level": "warning",
+          "message": {
+            "text": "Detected Prohibited C Function"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/client/Presets/AllToAllSweep.hpp"
+                },
+                "region": {
+                  "startLine": 74,
+                  "startColumn": 25,
+                  "endLine": 74,
+                  "endColumn": 31,
+                  "charOffset": 3006,
+                  "charLength": 6,
+                  "snippet": {
+                    "text": "printf",
+                    "rendered": {
+                      "text": "printf",
+                      "markdown": "`printf`"
+                    }
+                  },
+                  "sourceLanguage": "cpp"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "DevSkimSeverity": "Moderate",
+            "DevSkimConfidence": "High",
+            "tags": [
+              "API.DangerousAPI.BannedFunction"
+            ]
+          }
+        },
+        {
+          "ruleId": "6d6352a1-7e94-3012-a96c-2502af42fc59",
+          "kind": "fail",
+          "level": "warning",
+          "message": {
+            "text": "Detected Prohibited C Function"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/client/Client.cpp"
+                },
+                "region": {
+                  "startLine": 226,
+                  "startColumn": 23,
+                  "endLine": 226,
+                  "endColumn": 29,
+                  "charOffset": 8478,
+                  "charLength": 6,
+                  "snippet": {
+                    "text": "printf",
+                    "rendered": {
+                      "text": "printf",
+                      "markdown": "`printf`"
+                    }
+                  },
+                  "sourceLanguage": "cpp"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "DevSkimSeverity": "Moderate",
+            "DevSkimConfidence": "High",
+            "tags": [
+              "API.DangerousAPI.BannedFunction"
+            ]
+          }
+        },
+        {
+          "ruleId": "c93f820b-feae-3eb1-82f3-bf51abf06d7e",
+          "kind": "fail",
+          "level": "warning",
+          "message": {
+            "text": "Detected Prohibited C Function"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/header/TransferBench.hpp"
+                },
+                "region": {
+                  "startLine": 3363,
+                  "startColumn": 6,
+                  "endLine": 3363,
+                  "endColumn": 15,
+                  "charOffset": 138224,
+                  "charLength": 9,
+                  "snippet": {
+                    "text": "vsnprintf",
+                    "rendered": {
+                      "text": "vsnprintf",
+                      "markdown": "`vsnprintf`"
+                    }
+                  },
+                  "sourceLanguage": "cpp"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "DevSkimSeverity": "Moderate",
+            "DevSkimConfidence": "High",
+            "tags": [
+              "API.DangerousAPI.BannedFunction"
+            ]
+          }
+        },
+        {
+          "ruleId": "ab5773bf-faf0-34f1-979f-3df38b085179",
+          "kind": "fail",
+          "level": "warning",
+          "message": {
+            "text": "\"Prohibited C Function Found\""
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/client/Client.cpp"
+                },
+                "region": {
+                  "startLine": 44,
+                  "startColumn": 42,
+                  "endLine": 44,
+                  "endColumn": 47,
+                  "charOffset": 1587,
+                  "charLength": 5,
+                  "snippet": {
+                    "text": "atoll",
+                    "rendered": {
+                      "text": "atoll",
+                      "markdown": "`atoll`"
+                    }
+                  },
+                  "sourceLanguage": "cpp"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "DevSkimSeverity": "Moderate",
+            "DevSkimConfidence": "High",
+            "tags": [
+              "API.DangerousAPI.BannedFunction"
+            ]
+          }
+        },
+        {
+          "ruleId": "83147a10-ded2-35d3-ad25-df6f3744332c",
+          "kind": "fail",
+          "level": "warning",
+          "message": {
+            "text": "Detected Prohibited C Function"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/client/Presets/AllToAllSweep.hpp"
+                },
+                "region": {
+                  "startLine": 186,
+                  "startColumn": 22,
+                  "endLine": 186,
+                  "endColumn": 28,
+                  "charOffset": 7748,
+                  "charLength": 6,
+                  "snippet": {
+                    "text": "printf",
+                    "rendered": {
+                      "text": "printf",
+                      "markdown": "`printf`"
+                    }
+                  },
+                  "sourceLanguage": "cpp"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "DevSkimSeverity": "Moderate",
+            "DevSkimConfidence": "High",
+            "tags": [
+              "API.DangerousAPI.BannedFunction"
+            ]
+          }
+        },
+        {
+          "ruleId": "ec16e534-aa28-30b6-9f54-86623ac9730f",
+          "kind": "fail",
+          "level": "warning",
+          "message": {
+            "text": "Detected Prohibited C Function"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/header/TransferBench.hpp"
+                },
+                "region": {
+                  "startLine": 3357,
+                  "startColumn": 14,
+                  "endLine": 3357,
+                  "endColumn": 23,
+                  "charOffset": 138072,
+                  "charLength": 9,
+                  "snippet": {
+                    "text": "vsnprintf",
+                    "rendered": {
+                      "text": "vsnprintf",
+                      "markdown": "`vsnprintf`"
+                    }
+                  },
+                  "sourceLanguage": "cpp"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "DevSkimSeverity": "Moderate",
+            "DevSkimConfidence": "High",
+            "tags": [
+              "API.DangerousAPI.BannedFunction"
             ]
           }
         }
